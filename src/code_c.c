@@ -115,10 +115,10 @@ int first;
 int number_of_lines = 1, MAX_NO_OF_LINES = 99;
 int ifound, jfound;
 
-/*  Operator Mapping: 0xaa = '*' | 0xab = '+' | 0xac = ',' 
-                      0xad = '-' | 0xae ='.' | 0xaf = '/' */		      
-/* char op_mult=0xaa, op_plus=0xab, op_minus=0xad, op_dot=0xae, op_div=0xaf; */		      
-char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/';		      
+/*  Operator Mapping: 0xaa = '*' | 0xab = '+' | 0xac = ','
+                      0xad = '-' | 0xae ='.' | 0xaf = '/' */
+/* char op_mult=0xaa, op_plus=0xab, op_minus=0xad, op_dot=0xae, op_div=0xaf; */
+char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/';
 
   crtident = 2 + ident * 2;
   bprintf("%*s%s = ", crtident, "", ls);

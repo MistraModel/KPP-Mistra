@@ -57,24 +57,24 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Rosenbrock(Y,Tstart,Tend,
      &            AbsTol,RelTol,
-     &            ode_Fun,ode_Jac ,
+     &            FunTemplate,JacTemplate ,
      &            RPAR,IPAR,IERR)
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !    Solves the system y'=F(t,y) using a Rosenbrock method defined by:
 !
-!     G = 1/(H*gamma(1)) - ode_Jac(t0,Y0)
+!     G = 1/(H*gamma(1)) - JacTemplate(t0,Y0)
 !     T_i = t0 + Alpha(i)*H
 !     Y_i = Y0 + \sum_{j=1}^{i-1} A(i,j)*K_j
-!     G * K_i = ode_Fun( T_i, Y_i ) + \sum_{j=1}^S C(i,j)/H * K_j +
+!     G * K_i = FunTemplate( T_i, Y_i ) + \sum_{j=1}^S C(i,j)/H * K_j +
 !                  gamma(i)*dF/dT(t0, Y0)
 !     Y1 = Y0 + \sum_{j=1}^S M(j)*K_j
 !
 !    For details on Rosenbrock methods and their implementation consult:
 !         E. Hairer and G. Wanner
 !         "Solving ODEs II. Stiff and differential-algebraic problems".
-!         Springer series in computational mathematics, Springer-Verlag, 1996.  
-!    The codes contained in the book inspired this implementation.             
+!         Springer series in computational mathematics, Springer-Verlag, 1996.
+!    The codes contained in the book inspired this implementation.
 !
 !    (C)  Adrian Sandu, August 2004
 !    Virginia Polytechnic Institute and State University
@@ -86,11 +86,11 @@
 !
 !-     Y(NVAR)       = vector of initial conditions (at T=Tstart)
 !-    [Tstart,Tend]  = time range of integration
-!        (if Tstart>Tend the integration is performed backwards in time)  
+!        (if Tstart>Tend the integration is performed backwards in time)
 !-    RelTol, AbsTol = user precribed accuracy
-!-    SUBROUTINE ode_Fun( T, Y, Ydot ) = ODE function,
+!-    SUBROUTINE FunTemplate( T, Y, Ydot ) = ODE function,
 !                                         returns Ydot = Y' = F(T,Y)
-!-    SUBROUTINE ode_Fun( T, Y, Ydot ) = Jacobian of the ODE function,
+!-    SUBROUTINE JacTemplate( T, Y, Ydot ) = Jacobian of the ODE function,
 !                                         returns Jcb = dF/dY
 !-    IPAR(1:10)    = integer inputs parameters
 !-    RPAR(1:10)    = real inputs parameters
@@ -169,8 +169,6 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IMPLICIT NONE
-      INCLUDE 'KPP_ROOT_Parameters.h'
-      INCLUDE 'KPP_ROOT_Sparse.h'
 
       KPP_REAL Tstart,Tend
       KPP_REAL Y(KPP_NVAR),AbsTol(KPP_NVAR),RelTol(KPP_NVAR)
@@ -202,10 +200,9 @@
       PARAMETER (ONE  = 1.0d0)
       PARAMETER (DeltaMin = 1.0d-5)
 !~~~>   Functions
-      EXTERNAL ode_Fun, ode_Jac
-      KPP_REAL WLAMCH, ros_ErrorNorm
-      EXTERNAL WLAMCH, ros_ErrorNorm
-
+      EXTERNAL FunTemplate, JacTemplate
+      KPP_REAL WLAMCH
+      EXTERNAL WLAMCH
 !~~~>  Initialize statistics
       Nfun = IPAR(11)
       Njac = IPAR(12)
@@ -223,10 +220,10 @@
 !      For Vector tolerances (IPAR(2).EQ.0) the code uses AbsTol(1:NVAR) and RelTol(1:NVAR)
       IF (IPAR(2).EQ.0) THEN
          VectorTol = .TRUE.
-	 UplimTol  = KPP_NVAR
+         UplimTol  = KPP_NVAR
       ELSE
          VectorTol = .FALSE.
-	 UplimTol  = 1
+         UplimTol  = 1
       END IF
 
 !~~~>   The maximum number of steps admitted
@@ -237,7 +234,7 @@
       ELSE
          WRITE(6,*)'User-selected max no. of steps: IPAR(3)=',IPAR(3)
          CALL ros_ErrorMsg(-1,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 
 !~~~>  The particular Rosenbrock method chosen
@@ -248,7 +245,7 @@
       ELSE
          WRITE (6,*) 'User-selected Rosenbrock method: IPAR(4)=', Method
          CALL ros_ErrorMsg(-2,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 
 !~~~>  Unit roundoff (1+Roundoff>1)
@@ -262,7 +259,7 @@
       ELSE
          WRITE (6,*) 'User-selected Hmin: RPAR(1)=', RPAR(1)
          CALL ros_ErrorMsg(-3,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>  Upper bound on the step size: (positive value)
       IF (RPAR(2).EQ.ZERO) THEN
@@ -272,7 +269,7 @@
       ELSE
          WRITE (6,*) 'User-selected Hmax: RPAR(2)=', RPAR(2)
          CALL ros_ErrorMsg(-3,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>  Starting step size: (positive value)
       IF (RPAR(3).EQ.ZERO) THEN
@@ -282,7 +279,7 @@
       ELSE
          WRITE (6,*) 'User-selected Hstart: RPAR(3)=', RPAR(3)
          CALL ros_ErrorMsg(-3,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>  Step size can be changed s.t.  FacMin < Hnew/Hexit < FacMax
       IF (RPAR(4).EQ.ZERO) THEN
@@ -292,7 +289,7 @@
       ELSE
          WRITE (6,*) 'User-selected FacMin: RPAR(4)=', RPAR(4)
          CALL ros_ErrorMsg(-4,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
       IF (RPAR(5).EQ.ZERO) THEN
          FacMax = 6.0d0
@@ -301,7 +298,7 @@
       ELSE
          WRITE (6,*) 'User-selected FacMax: RPAR(5)=', RPAR(5)
          CALL ros_ErrorMsg(-4,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>   FacRej: Factor to decrease step after 2 succesive rejections
       IF (RPAR(6).EQ.ZERO) THEN
@@ -311,7 +308,7 @@
       ELSE
          WRITE (6,*) 'User-selected FacRej: RPAR(6)=', RPAR(6)
          CALL ros_ErrorMsg(-4,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>   FacSafe: Safety Factor in the computation of new step size
       IF (RPAR(7).EQ.ZERO) THEN
@@ -321,7 +318,7 @@
       ELSE
          WRITE (6,*) 'User-selected FacSafe: RPAR(7)=', RPAR(7)
          CALL ros_ErrorMsg(-4,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 !~~~>  Check if tolerances are reasonable
        DO i=1,UplimTol
@@ -330,7 +327,7 @@
             WRITE (6,*) ' AbsTol(',i,') = ',AbsTol(i)
             WRITE (6,*) ' RelTol(',i,') = ',RelTol(i)
             CALL ros_ErrorMsg(-5,Tstart,ZERO,IERR)
-	    RETURN
+            RETURN
          END IF
        END DO
 
@@ -355,13 +352,13 @@
       ELSE
          WRITE (6,*) 'Unknown Rosenbrock method: IPAR(4)=', Method
          CALL ros_ErrorMsg(-2,Tstart,ZERO,IERR)
-	 RETURN
+         RETURN
       END IF
 
 !~~~>  CALL Rosenbrock method
       CALL RosenbrockIntegrator(Y,Tstart,Tend,Texit,
      &      AbsTol,RelTol,
-     &      ode_Fun,ode_Jac ,
+     &      FunTemplate,JacTemplate ,
 !  Rosenbrock method coefficients
      &      ros_S, ros_M, ros_E, ros_A, ros_C,
      &      ros_Alpha, ros_Gamma, ros_ELO, ros_NewF,
@@ -393,7 +390,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE RosenbrockIntegrator(Y,Tstart,Tend,T,
      &      AbsTol,RelTol,
-     &      ode_Fun,ode_Jac ,
+     &      FunTemplate,JacTemplate ,
 !~~~> Rosenbrock method coefficients
      &      ros_S, ros_M, ros_E, ros_A, ros_C,
      &      ros_Alpha, ros_Gamma, ros_ELO, ros_NewF,
@@ -410,19 +407,17 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IMPLICIT NONE
-      INCLUDE 'KPP_ROOT_Parameters.h'
-      INCLUDE 'KPP_ROOT_Sparse.h'
 
-!~~~> Input: the initial condition at Tstart; Output: the solution at T      
+!~~~> Input: the initial condition at Tstart; Output: the solution at T
       KPP_REAL Y(KPP_NVAR)
 !~~~> Input: integration interval
       KPP_REAL Tstart,Tend
-!~~~> Output: time at which the solution is returned (T=Tend if success)   
+!~~~> Output: time at which the solution is returned (T=Tend if success)
       KPP_REAL T
 !~~~> Input: tolerances
       KPP_REAL  AbsTol(KPP_NVAR), RelTol(KPP_NVAR)
 !~~~> Input: ode function and its Jacobian
-      EXTERNAL ode_Fun, ode_Jac
+      EXTERNAL FunTemplate, JacTemplate
 !~~~> Input: The Rosenbrock method parameters
       INTEGER  ros_S
       KPP_REAL ros_M(ros_S), ros_E(ros_S)
@@ -483,13 +478,13 @@
       DO WHILE ( (Direction.GT.0).AND.((T-Tend)+Roundoff.LE.ZERO)
      &     .OR. (Direction.LT.0).AND.((Tend-T)+Roundoff.LE.ZERO) )
 
-      IF ( Nstp.GT.Max_no_steps ) THEN  ! Too many steps
-	CALL ros_ErrorMsg(-6,T,H,IERR)
-	RETURN
+      IF ( Nstp.GT.Max_no_steps ) THEN ! Too many steps
+        CALL ros_ErrorMsg(-6,T,H,IERR)
+        RETURN
       END IF
       IF ( ((T+0.1d0*H).EQ.T).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
-	CALL ros_ErrorMsg(-7,T,H,IERR)
-	RETURN
+        CALL ros_ErrorMsg(-7,T,H,IERR)
+        RETURN
       END IF
 
 !~~~>  Limit H if necessary to avoid going beyond Tend
@@ -497,16 +492,16 @@
       H = MIN(H,ABS(Tend-T))
 
 !~~~>   Compute the function at current time
-      CALL ode_Fun(T,Y,Fcn0)
+      CALL FunTemplate(T,Y,Fcn0)
 
 !~~~>  Compute the function derivative with respect to T
       IF (.NOT.Autonomous) THEN
          CALL ros_FunTimeDerivative ( T, Roundoff, Y,
-     &                       Fcn0, ode_Fun, dFdT )
+     &                       Fcn0, FunTemplate, dFdT )
       END IF
 
 !~~~>   Compute the Jacobian at current time
-      CALL ode_Jac(T,Y,Jac0)
+      CALL JacTemplate(T,Y,Jac0)
 
 !~~~>  Repeat step calculation until current step accepted
       DO WHILE (.TRUE.) ! WHILE STEP NOT ACCEPTED
@@ -515,37 +510,37 @@
       CALL ros_PrepareMatrix(H,Direction,ros_Gamma(1),
      &              Jac0,Ghimj,Pivot,Singular)
       IF (Singular) THEN ! More than 5 consecutive failed decompositions
-	 CALL ros_ErrorMsg(-8,T,H,IERR)
-	 RETURN
+         CALL ros_ErrorMsg(-8,T,H,IERR)
+         RETURN
       END IF
 
 !~~~>   Compute the stages
       DO istage = 1, ros_S
 
-	 ! Current istage offset. Current istage vector is K(ioffset+1:ioffset+KPP_NVAR)
-	 ioffset = KPP_NVAR*(istage-1)
+         ! Current istage offset. Current istage vector is K(ioffset+1:ioffset+KPP_NVAR)
+         ioffset = KPP_NVAR*(istage-1)
 
-	 ! For the 1st istage the function has been computed previously
-	 IF ( istage.EQ.1 ) THEN
-	   CALL WCOPY(KPP_NVAR,Fcn0,1,Fcn,1)
-	 ! istage>1 and a new function evaluation is needed at the current istage
-	 ELSEIF ( ros_NewF(istage) ) THEN
-	   CALL WCOPY(KPP_NVAR,Y,1,Ynew,1)
-	   DO j = 1, istage-1
-	     CALL WAXPY(KPP_NVAR,ros_A((istage-1)*(istage-2)/2+j),
+         ! For the 1st istage the function has been computed previously
+         IF ( istage.EQ.1 ) THEN
+           CALL WCOPY(KPP_NVAR,Fcn0,1,Fcn,1)
+         ! istage>1 and a new function evaluation is needed at the current istage
+         ELSEIF ( ros_NewF(istage) ) THEN
+           CALL WCOPY(KPP_NVAR,Y,1,Ynew,1)
+           DO j = 1, istage-1
+             CALL WAXPY(KPP_NVAR,ros_A((istage-1)*(istage-2)/2+j),
      &                   K(KPP_NVAR*(j-1)+1),1,Ynew,1)
-	   END DO
-	   Tau = T + ros_Alpha(istage)*Direction*H
-           CALL ode_Fun(Tau,Ynew,Fcn)
-	 END IF ! if istage.EQ.1 elseif ros_NewF(istage)
-	 CALL WCOPY(KPP_NVAR,Fcn,1,K(ioffset+1),1)
-	 DO j = 1, istage-1
-	   HC = ros_C((istage-1)*(istage-2)/2+j)/(Direction*H)
-	   CALL WAXPY(KPP_NVAR,HC,K(KPP_NVAR*(j-1)+1),1,K(ioffset+1),1)
-	 END DO
+           END DO
+           Tau = T + ros_Alpha(istage)*Direction*H
+           CALL FunTemplate(Tau,Ynew,Fcn)
+         END IF ! if istage.EQ.1 elseif ros_NewF(istage)
+         CALL WCOPY(KPP_NVAR,Fcn,1,K(ioffset+1),1)
+         DO j = 1, istage-1
+           HC = ros_C((istage-1)*(istage-2)/2+j)/(Direction*H)
+           CALL WAXPY(KPP_NVAR,HC,K(KPP_NVAR*(j-1)+1),1,K(ioffset+1),1)
+         END DO
          IF ((.NOT. Autonomous).AND.(ros_Gamma(istage).NE.ZERO)) THEN
            HG = Direction*H*ros_Gamma(istage)
-	   CALL WAXPY(KPP_NVAR,HG,dFdT,1,K(ioffset+1),1)
+           CALL WAXPY(KPP_NVAR,HG,dFdT,1,K(ioffset+1),1)
          END IF
          CALL SolveTemplate(Ghimj, Pivot, K(ioffset+1))
 
@@ -555,13 +550,13 @@
 !~~~>  Compute the new solution
       CALL WCOPY(KPP_NVAR,Y,1,Ynew,1)
       DO j=1,ros_S
-	 CALL WAXPY(KPP_NVAR,ros_M(j),K(KPP_NVAR*(j-1)+1),1,Ynew,1)
+         CALL WAXPY(KPP_NVAR,ros_M(j),K(KPP_NVAR*(j-1)+1),1,Ynew,1)
       END DO
 
 !~~~>  Compute the error estimation
       CALL WSCAL(KPP_NVAR,ZERO,Yerr,1)
       DO j=1,ros_S
-	CALL WAXPY(KPP_NVAR,ros_E(j),K(KPP_NVAR*(j-1)+1),1,Yerr,1)
+        CALL WAXPY(KPP_NVAR,ros_E(j),K(KPP_NVAR*(j-1)+1),1,Yerr,1)
       END DO
       Err = ros_ErrorNorm ( Y, Ynew, Yerr, AbsTol, RelTol, VectorTol )
 
@@ -573,26 +568,26 @@
       Nstp = Nstp+1
       IF ( (Err.LE.ONE).OR.(H.LE.Hmin) ) THEN  !~~~> Accept step
          Nacc = Nacc+1
-	 CALL WCOPY(KPP_NVAR,Ynew,1,Y,1)
+         CALL WCOPY(KPP_NVAR,Ynew,1,Y,1)
          T = T + Direction*H
-	 Hnew = MAX(Hmin,MIN(Hnew,Hmax))
+         Hnew = MAX(Hmin,MIN(Hnew,Hmax))
          IF (RejectLastH) THEN  ! No step size increase after a rejected step
-	    Hnew = MIN(Hnew,H)
-	 END IF
+            Hnew = MIN(Hnew,H)
+         END IF
          RejectLastH = .FALSE.
          RejectMoreH = .FALSE.
          H = Hnew
-	 GOTO 101  ! EXIT THE LOOP: WHILE STEP NOT ACCEPTED
+         GOTO 101               ! EXIT THE LOOP: WHILE STEP NOT ACCEPTED
       ELSE                 !~~~> Reject step
          IF (RejectMoreH) THEN
-	    Hnew=H*FacRej
-	 END IF
+            Hnew=H*FacRej
+         END IF
          RejectMoreH = RejectLastH
          RejectLastH = .TRUE.
          H = Hnew
          IF (Nacc.GE.1) THEN
-	    Nrej = Nrej+1
-	 END IF
+            Nrej = Nrej+1
+         END IF
       END IF ! Err <= 1
 
       END DO ! LOOP: WHILE STEP NOT ACCEPTED
@@ -615,7 +610,6 @@
 !~~~> Computes the "scaled norm" of the error vector Yerr
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
-      INCLUDE 'KPP_ROOT_Parameters.h'
 
 ! Input arguments
       KPP_REAL Y(KPP_NVAR), Ynew(KPP_NVAR), Yerr(KPP_NVAR)
@@ -628,7 +622,7 @@
 
       Err = ZERO
       DO i=1,KPP_NVAR
-	Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
+        Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
         IF (VectorTol) THEN
           Scale = AbsTol(i)+RelTol(i)*Ymax
         ELSE
@@ -645,29 +639,25 @@
 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE ros_FunTimeDerivative ( T, Roundoff, Y,
-     &                       Fcn0, ode_Fun, dFdT )
+     &                       Fcn0, FunTemplate, dFdT )
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~> The time partial derivative of the function by finite differences
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
-      INCLUDE 'KPP_ROOT_Parameters.h'
 
 !~~~> Input arguments
       KPP_REAL T, Roundoff, Y(KPP_NVAR), Fcn0(KPP_NVAR)
-      EXTERNAL ode_Fun
+      EXTERNAL FunTemplate
 !~~~> Output arguments
       KPP_REAL dFdT(KPP_NVAR)
 !~~~> Global variables
-      INTEGER Nfun,Njac,Nstp,Nacc,Nrej,Ndec,Nsol,Nsng
-      COMMON /Statistics/ Nfun,Njac,Nstp,Nacc,Nrej,
-     &       Ndec,Nsol,Nsng
 !~~~> Local variables
       KPP_REAL Delta, DeltaMin, ONE
       PARAMETER ( DeltaMin = 1.0d-6 )
       PARAMETER ( ONE = 1.0d0 )
 
       Delta = SQRT(Roundoff)*MAX(DeltaMin,ABS(T))
-      CALL ode_Fun(T+Delta,Y,dFdT)
+      CALL FunTemplate(T+Delta,Y,dFdT)
       CALL WAXPY(KPP_NVAR,(-ONE),Fcn0,1,dFdT,1)
       CALL WSCAL(KPP_NVAR,(ONE/Delta),dFdT,1)
 
@@ -675,7 +665,7 @@
       END ! SUBROUTINE ros_FunTimeDerivative
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE ros_PrepareMatrix ( H, Direction, gam,
      &                    Jac0, Ghimj, Pivot, Singular )
 ! --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -687,7 +677,6 @@
 !          -exit after 5 consecutive fails
 ! --- --- --- --- --- --- --- --- --- --- --- --- ---
       IMPLICIT NONE
-      INCLUDE 'KPP_ROOT_Parameters.h'
       INCLUDE 'KPP_ROOT_Sparse.h'
 
 !~~~> Input arguments
@@ -725,19 +714,19 @@
         CALL DecompTemplate( Ghimj, Pivot, ising )
         IF (ising .EQ. 0) THEN
 !~~~>    If successful done
-	  Singular = .FALSE.
-	ELSE ! ising .ne. 0
+          Singular = .FALSE.
+       ELSE ! ising .ne. 0
 !~~~>    If unsuccessful half the step size; if 5 consecutive fails then return
           Nsng = Nsng+1
           Nconsecutive = Nconsecutive+1
-	  Singular = .TRUE.
-	  PRINT*,'Warning: LU Decomposition returned ising = ',ising
+          Singular = .TRUE.
+          PRINT*,'Warning: LU Decomposition returned ising = ',ising
           IF (Nconsecutive.LE.5) THEN ! Less than 5 consecutive failed decompositions
             H = H*HALF
-	  ELSE  ! More than 5 consecutive failed decompositions
- 	    RETURN
+         ELSE ! More than 5 consecutive failed decompositions
+            RETURN
           END IF  ! Nconsecutive
-        END IF	! ising
+        END IF  ! ising
 
       END DO ! WHILE Singular
 
@@ -745,7 +734,7 @@
       END ! SUBROUTINE ros_PrepareMatrix
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE ros_ErrorMsg(Code,T,H,IERR)
       KPP_REAL T, H
       INTEGER IERR, Code
@@ -784,13 +773,12 @@
       END
 
 
-
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Ros2 (ros_S,ros_A,ros_C,ros_M,ros_E,ros_Alpha,
      &                ros_Gamma,ros_NewF,ros_ELO,ros_Name)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! --- AN L-STABLE METHOD, 2 stages, order 2
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
       INTEGER S
       PARAMETER (S=2)
@@ -841,12 +829,12 @@
       END ! SUBROUTINE Ros2
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Ros3 (ros_S,ros_A,ros_C,ros_M,ros_E,ros_Alpha,
      &               ros_Gamma,ros_NewF,ros_ELO,ros_Name)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! --- AN L-STABLE METHOD, 3 stages, order 3, 2 function evaluations
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
       INTEGER S
       PARAMETER (S=3)
@@ -902,13 +890,13 @@
       RETURN
       END ! SUBROUTINE Ros3
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Ros4 (ros_S,ros_A,ros_C,ros_M,ros_E,ros_Alpha,
      &               ros_Gamma,ros_NewF,ros_ELO,ros_Name)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !     L-STABLE ROSENBROCK METHOD OF ORDER 4, WITH 4 STAGES
 !     L-STABLE EMBEDDED ROSENBROCK METHOD OF ORDER 3
 !
@@ -916,7 +904,7 @@
 !         EQUATIONS II. STIFF AND DIFFERENTIAL-ALGEBRAIC PROBLEMS.
 !         SPRINGER SERIES IN COMPUTATIONAL MATHEMATICS,
 !         SPRINGER-VERLAG (1990)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IMPLICIT NONE
       INTEGER S
@@ -984,12 +972,12 @@
       RETURN
       END ! SUBROUTINE Ros4
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Rodas3 (ros_S,ros_A,ros_C,ros_M,ros_E,ros_Alpha,
      &                ros_Gamma,ros_NewF,ros_ELO,ros_Name)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ! --- A STIFFLY-STABLE METHOD, 4 stages, order 3
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
       INTEGER S
       PARAMETER (S=4)
@@ -1057,17 +1045,17 @@
       RETURN
       END ! SUBROUTINE Rodas3
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE Rodas4 (ros_S,ros_A,ros_C,ros_M,ros_E,ros_Alpha,
      &                 ros_Gamma,ros_NewF,ros_ELO,ros_Name)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !     STIFFLY-STABLE ROSENBROCK METHOD OF ORDER 4, WITH 6 STAGES
 !
 !         E. HAIRER AND G. WANNER, SOLVING ORDINARY DIFFERENTIAL
 !         EQUATIONS II. STIFF AND DIFFERENTIAL-ALGEBRAIC PROBLEMS.
 !         SPRINGER SERIES IN COMPUTATIONAL MATHEMATICS,
 !         SPRINGER-VERLAG (1996)
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IMPLICIT NONE
       INTEGER S
@@ -1102,8 +1090,8 @@
 !~~~> The coefficient matrices A and C are strictly lower triangular.
 !   The lower triangular (subdiagonal) elements are stored in row-wise order:
 !   A(2,1) = ros_A(1), A(3,1)=ros_A(2), A(3,2)=ros_A(3), etc.
-!   The general mapping formula is:  A(i,j) = ros_A( (i-1)*(i-2)/2 + j )       
-!                                    C(i,j) = ros_C( (i-1)*(i-2)/2 + j )  
+!   The general mapping formula is:  A(i,j) = ros_A( (i-1)*(i-2)/2 + j )
+!                                    C(i,j) = ros_C( (i-1)*(i-2)/2 + j )
 
        ros_A(1) = 0.1544000000000000d+01
        ros_A(2) = 0.9466785280815826d+00
@@ -1171,13 +1159,11 @@
 
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE DecompTemplate( A, Pivot, ising )
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !  Template for the LU decomposition
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
-      INCLUDE 'KPP_ROOT_Parameters.h'
-      INCLUDE 'KPP_ROOT_Global.h'
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~> Inout variables
       KPP_REAL A(KPP_LU_NONZERO)
 !~~~> Output variables
@@ -1195,13 +1181,11 @@
 
       END ! SUBROUTINE DecompTemplate
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE SolveTemplate( A, Pivot, b )
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-!  Template for the forward/backward substitution (using pre-computed LU decomposition)   
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
-      INCLUDE 'KPP_ROOT_Parameters.h'
-      INCLUDE 'KPP_ROOT_Global.h'
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!  Template for the forward/backward substitution (using pre-computed LU decomposition)
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~> Input variables
       KPP_REAL A(KPP_LU_NONZERO)
       INTEGER Pivot(KPP_NVAR)
@@ -1221,12 +1205,12 @@
 
       END ! SUBROUTINE SolveTemplate
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE FunTemplate( T, Y, Ydot )
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !  Template for the ODE function call.
-!  Updates the rate coefficients (and possibly the fixed species) at each call    
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!  Updates the rate coefficients (and possibly the fixed species) at each call
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       INCLUDE 'KPP_ROOT_Parameters.h'
       INCLUDE 'KPP_ROOT_Global.h'
 !~~~> Input variables
@@ -1253,12 +1237,12 @@
       END ! SUBROUTINE FunTemplate
 
 
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       SUBROUTINE JacTemplate( T, Y, Jcb )
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !  Template for the ODE Jacobian call.
-!  Updates the rate coefficients (and possibly the fixed species) at each call    
-!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
+!  Updates the rate coefficients (and possibly the fixed species) at each call
+!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       INCLUDE 'KPP_ROOT_Parameters.h'
       INCLUDE 'KPP_ROOT_Global.h'
 !~~~> Input variables
@@ -1282,4 +1266,4 @@
       Njac = Njac+1
 
       RETURN
-      END !  SUBROUTINE JacTemplate                                                                          
+      END !  SUBROUTINE JacTemplate

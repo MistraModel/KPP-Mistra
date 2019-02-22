@@ -34,17 +34,17 @@
   following suggestions from Jason Lander <jason@env.leeds.ac.uk>
 ******************************************************************************/
 
-%s CMD_STATE INC_STATE MOD_STATE INT_STATE 
-%s PRM_STATE DSP_STATE SSP_STATE INI_STATE EQN_STATE EQNTAG_STATE 
-%s RATE_STATE LMP_STATE CR_IGNORE SC_IGNORE ATM_STATE LKT_STATE INL_STATE 
+%s CMD_STATE INC_STATE MOD_STATE INT_STATE
+%s PRM_STATE DSP_STATE SSP_STATE INI_STATE EQN_STATE EQNTAG_STATE
+%s RATE_STATE LMP_STATE CR_IGNORE SC_IGNORE ATM_STATE LKT_STATE INL_STATE
 %s MNI_STATE TPT_STATE USE_STATE
 %s COMMENT COMMENT2 EQN_ID
 %x INL_CODE
 
 %{
   #include <string.h> /* strcpy, strlen */
-  #include "gdata.h" 
-  #include "scan.h" 
+  #include "gdata.h"
+  #include "scan.h"
   #include "y.tab.h"
 
   void Include ( char * filename );
@@ -54,12 +54,12 @@
   char *crt_filename;
 
   #define MAX_INCLUDE 10
-  
+
   YY_BUFFER_STATE yy_buffers[ MAX_INCLUDE ];
   int yy_line_no[ MAX_INCLUDE ];
   char *yy_filename[ MAX_INCLUDE ];
   int yy_buf_level = 0;
-  
+
   char crtToken[100];
   char nextToken[100];
   int crtTokType;
@@ -77,7 +77,7 @@
   typedef struct {
                    char *name;
                    int next;
-                   int cmd; 
+                   int cmd;
                  } KEYWORD;
 
   KEYWORD keywords[];
@@ -101,7 +101,7 @@
 
 BT    	[ \t]
 SPACE 	[ \t]
-CR      [\n] 
+CR      [\n]
 TAG     [a-zA-Z_0-9]+
 STRING 	[^ \t\n{}#;]+
 
@@ -119,8 +119,8 @@ UFLOAT  {UREAL}([eE]{NRS})?
 
 %%
 {SPACE}+                {
-                        }  
-#		        { BEGIN CMD_STATE; 
+                        }
+#		        { BEGIN CMD_STATE;
                         }
 \{                      { oldstate = (yy_start - 1) / 2;
                           BEGIN COMMENT;
@@ -129,39 +129,39 @@ UFLOAT  {UREAL}([eE]{NRS})?
                           BEGIN COMMENT2;
                         }
 <COMMENT>[^\}\n]*       {
-                        } 
+                        }
 <COMMENT>\}             { BEGIN oldstate;
-                        }    
+                        }
 <COMMENT2>[^\n]*        {
-                        } 
-<COMMENT2>{CR}          { crt_line_no++; 
+                        }
+<COMMENT2>{CR}          { crt_line_no++;
 			  BEGIN oldstate;
-                        }    
-{CR}			{ crt_line_no++; 
+                        }
+{CR}			{ crt_line_no++;
                         }
 <CMD_STATE>{STRING}     { idx = CheckKeyword( yytext );
-                          if ( idx < 0 ) { 
+                          if ( idx < 0 ) {
                             BEGIN CR_IGNORE;
-                            break; 
-                          } 
+                            break;
+                          }
                           BEGIN keywords[idx].next;
                           if ( keywords[idx].cmd ) {
                             crt_section = keywords[idx].cmd;
                             RETURN( keywords[idx].cmd );
                           }
-                        } 
+                        }
 <INC_STATE>{STRING}     { Include( IncName(yytext) );
                           BEGIN CR_IGNORE;
-                        } 
+                        }
 <MOD_STATE>{STRING}     { Include( ModelName(yytext) );
                           BEGIN CR_IGNORE;
-                        } 
+                        }
 <INT_STATE>{STRING}     { Include( IntegName(yytext) );
                           BEGIN CR_IGNORE;
-                        } 
+                        }
 <PRM_STATE>{STRING}     { strcpy( yylval.str, yytext );
-                          BEGIN CR_IGNORE;                         
-                          RETURN( PARAMETER ); 
+                          BEGIN CR_IGNORE;
+                          RETURN( PARAMETER );
                         }
 <CR_IGNORE>{STRING}     { ScanError("Extra parameter on command line '%s'", yytext);
                         }
@@ -169,7 +169,7 @@ UFLOAT  {UREAL}([eE]{NRS})?
                           RETURN( ATOMID );
                         }
 <ATM_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <DSP_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( SPCSPC );
                         }
@@ -177,91 +177,91 @@ UFLOAT  {UREAL}([eE]{NRS})?
                           RETURN( SPCNR );
                         }
 <DSP_STATE>[=]          { RETURN( SPCEQUAL );
-                        } 
+                        }
 <DSP_STATE>[+]          { RETURN( SPCPLUS );
-                        } 
+                        }
 <DSP_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <DSP_STATE>[^;#]        { ScanError("Invalid character '%c' in species definition", yytext[0] );
                         }
 <SSP_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( SSPID );
                         }
 <SSP_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <INI_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
-                          RETURN( INISPC ); 
-                        } 
+                          RETURN( INISPC );
+                        }
 <INI_STATE>[=]          { RETURN( INIEQUAL );
-                        } 
+                        }
 <INI_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <INI_STATE>{FLOAT}      { strcpy( yylval.str, yytext );
-                          RETURN( INIVALUE ); 
-                        } 
+                          RETURN( INIVALUE );
+                        }
 <INI_STATE>[^=;#]       { ScanError("Invalid character '%c' in initial values", yytext[0] );
                         }
 <EQN_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( EQNSPC );
-                        } 
+                        }
 <EQN_STATE>[=]          { RETURN( EQNEQUAL );
-                        } 
+                        }
 <EQN_STATE>{UFLOAT}     { strcpy( yylval.str, yytext );
-                          RETURN( EQNCOEF ); 
-                        } 
+                          RETURN( EQNCOEF );
+                        }
 <EQN_STATE>[:]          { BEGIN RATE_STATE;
                           *crt_rate = 0;
                           RETURN( EQNCOLON );
-                        } 
+                        }
 <EQN_STATE>[+-]         { strcpy( yylval.str, yytext );
                           RETURN( EQNSIGN );
-                        } 
+                        }
 <EQN_STATE>[<]          { BEGIN EQNTAG_STATE;
                           RETURN( EQNLESS );
 			}
 <EQNTAG_STATE>{TAG}     { strcpy( yylval.str, yytext );
                           RETURN( EQNTAG );
-                        } 
+                        }
 <EQNTAG_STATE>[>]       { BEGIN EQN_STATE;
                           RETURN( EQNGREATER );
-                        }    
+                        }
 <RATE_STATE>{STRING}    { strcpy( yylval.str, yytext );
                           RETURN( RATE );
-                        } 
+                        }
 <RATE_STATE>;           { BEGIN EQN_STATE;
                           RETURN( yytext[0] );
-                        } 
+                        }
 <LMP_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( LMPSPC );
                         }
 <LMP_STATE>[+]          { RETURN( LMPPLUS );
-                        } 
+                        }
 <LMP_STATE>[:]          { RETURN( LMPCOLON );
-                        } 
+                        }
 <LMP_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <LMP_STATE>[^;#]        { ScanError("Invalid character '%c' in species definition", yytext[0] );
                         }
 <LKT_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( LKTID );
                         }
 <LKT_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <TPT_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( TPTID );
                         }
 <TPT_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <USE_STATE>{STRING}     { strcpy( yylval.str, yytext );
                           RETURN( USEID );
                         }
 <USE_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <MNI_STATE>{IDSPC}      { strcpy( yylval.str, yytext );
                           RETURN( MNIID );
                         }
 <MNI_STATE>;            { RETURN( yytext[0] );
-                        } 
+                        }
 <INL_STATE>{STRING}	{ strcpy( yylval.str, yytext );
                           BEGIN INL_CODE;
 			  RETURN( INLCTX );
@@ -285,35 +285,35 @@ UFLOAT  {UREAL}([eE]{NRS})?
 <<EOF>>			{ if ( ! EndInclude() ) {
                             RETURN( INITIAL );
                           }
-                        }  
+                        }
 %%
 
   KEYWORD keywords[] = { { "INCLUDE",    INC_STATE, 0 },
                          { "MODEL",      MOD_STATE, 0 },
                          { "INTEGRATOR", INT_STATE, 0 },
-                         { "JACOBIAN",   PRM_STATE, JACOBIAN }, 
-                         { "HESSIAN",    PRM_STATE, HESSIAN }, 
-                         { "DECLARE",    PRM_STATE, DECLARE }, 
-                         { "STOICMAT",   PRM_STATE, STOICMAT }, 
-                         { "STOCHASTIC", PRM_STATE, STOCHASTIC }, 
-                         { "DOUBLE",     PRM_STATE, DOUBLE }, 
-                         { "REORDER",    PRM_STATE, REORDER }, 
-                         { "MEX",        PRM_STATE, MEX }, 
-                         { "DUMMYINDEX", PRM_STATE, DUMMYINDEX}, 
-                         { "EQNTAGS",    PRM_STATE, EQNTAGS}, 
-                         { "FUNCTION",   PRM_STATE, FUNCTION }, 
-                         { "ATOMS",      ATM_STATE, ATOMDECL },   
+                         { "JACOBIAN",   PRM_STATE, JACOBIAN },
+                         { "HESSIAN",    PRM_STATE, HESSIAN },
+                         { "DECLARE",    PRM_STATE, DECLARE },
+                         { "STOICMAT",   PRM_STATE, STOICMAT },
+                         { "STOCHASTIC", PRM_STATE, STOCHASTIC },
+                         { "DOUBLE",     PRM_STATE, DOUBLE },
+                         { "REORDER",    PRM_STATE, REORDER },
+                         { "MEX",        PRM_STATE, MEX },
+                         { "DUMMYINDEX", PRM_STATE, DUMMYINDEX},
+                         { "EQNTAGS",    PRM_STATE, EQNTAGS},
+                         { "FUNCTION",   PRM_STATE, FUNCTION },
+                         { "ATOMS",      ATM_STATE, ATOMDECL },
                          { "CHECK",      ATM_STATE, CHECK },
                          { "CHECKALL",   INITIAL,   CHECKALL },
-                         { "DEFVAR",     DSP_STATE, DEFVAR }, 
-                         { "DEFRAD",     DSP_STATE, DEFVAR }, 
-                         { "DEFFIX",     DSP_STATE, DEFFIX }, 
-                         { "SETVAR",     SSP_STATE, SETVAR }, 
-                         { "SETRAD",     SSP_STATE, SETVAR }, 
-                         { "SETFIX",     SSP_STATE, SETFIX }, 
-                         { "INITVALUES", INI_STATE, INITVALUES }, 
-                         { "EQUATIONS",  EQN_STATE, EQUATIONS }, 
-                         { "LUMP",       LMP_STATE, LUMP }, 
+                         { "DEFVAR",     DSP_STATE, DEFVAR },
+                         { "DEFRAD",     DSP_STATE, DEFVAR },
+                         { "DEFFIX",     DSP_STATE, DEFFIX },
+                         { "SETVAR",     SSP_STATE, SETVAR },
+                         { "SETRAD",     SSP_STATE, SETVAR },
+                         { "SETFIX",     SSP_STATE, SETFIX },
+                         { "INITVALUES", INI_STATE, INITVALUES },
+                         { "EQUATIONS",  EQN_STATE, EQUATIONS },
+                         { "LUMP",       LMP_STATE, LUMP },
                          { "LOOKAT", 	 LKT_STATE, LOOKAT },
                          { "LOOKATALL",  INITIAL,   LOOKATALL },
                          { "TRANSPORT",  TPT_STATE, TRANSPORT },
@@ -336,7 +336,8 @@ UFLOAT  {UREAL}([eE]{NRS})?
                          { "RUN",        PRM_STATE, RUN },
                          { "USES",       USE_STATE, USES },
                          { "SPARSEDATA", PRM_STATE, SPARSEDATA },
-                         { 0, 0, 0 } 
+                         { "FLUX",       PRM_STATE, FLUX },
+                         { 0, 0, 0 }
                        };
 
 void Include ( char * name )
@@ -353,13 +354,13 @@ YY_BUFFER_STATE newb;
   yy_line_no[ yy_buf_level ]  = crt_line_no;
   yy_filename[ yy_buf_level ] = crt_filename;
   yy_buf_level++;
-  
-  crt_line_no = 1;  
+
+  crt_line_no = 1;
 
   crt_filename = malloc( 1 + strlen( name ) );
-  strcpy( crt_filename, name ); 
+  strcpy( crt_filename, name );
 
- 
+
   f = fopen( name, "r" );
   if( f == 0 )
     FatalError(3,"%s: Can't read file", name );
@@ -375,15 +376,15 @@ char * oldn;
 
   if ( yy_buf_level > 0 ) {
     oldb = YY_CURRENT_BUFFER;
-    oldn = crt_filename; 
+    oldn = crt_filename;
     yy_buf_level--;
     yy_switch_to_buffer( yy_buffers[yy_buf_level] );
     crt_line_no = yy_line_no[ yy_buf_level ];
-    crt_filename = yy_filename[ yy_buf_level ]; 
-    yy_delete_buffer( oldb ); 
+    crt_filename = yy_filename[ yy_buf_level ];
+    yy_delete_buffer( oldb );
     free( oldn );
     return 1;
-  } 
+  }
   return 0;
 }
 
@@ -411,4 +412,3 @@ int i;
     i++;
   }
 }
-

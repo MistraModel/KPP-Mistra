@@ -32,6 +32,7 @@
 
 #include "gdata.h"
 #include "code.h"
+#include "scan.h"
 #include <unistd.h>
 #include <string.h>
 
@@ -42,6 +43,7 @@ void (*WriteElm)( NODE *n );
 void (*WriteSymbol)( int op );
 void (*WriteAssign)( char* lval, char* rval );
 void (*WriteComment)( char *fmt, ...  );
+void (*WriteOMPThreadPrivate)( char *fmt, ...  );
 void (*Declare)( int v );
 void (*ExternDeclare)( int v );
 void (*GlobalDeclare)( int v );
@@ -359,10 +361,7 @@ Va_list args;
 NODE *n;
 ELEMENT *elm;
 VARIABLE *var;
-int i, j;
-float val;
-char *expr;
-  
+
   var = varTable[ v ];
   n   = (NODE*)    malloc( sizeof(NODE) );
   elm = (ELEMENT*) malloc( sizeof(ELEMENT) );
@@ -767,11 +766,9 @@ NODE *n;
 void CommentFncBegin( int f, int *vars )
 {
 VARIABLE *var;
-char * name;
 int narg;
 int i;
 
-  name = varTable[ f ]->name;
   narg = varTable[ f ]->maxi;
   var = varTable[ f ];
 
@@ -793,10 +790,8 @@ void CommentFunctionBegin( int f, ... )
 Va_list args;
 int i;
 int vars[20];
-char * name;
 int narg;
 
-  name = varTable[ f ]->name;
   narg = varTable[ f ]->maxi;
 
   Va_start( args, f );
@@ -814,4 +809,3 @@ void CommentFunctionEnd( int f )
   WriteDelim();
   NewLines(2);
 }
-
