@@ -1848,7 +1848,7 @@ int *irow;
 int *icol;
 int *crow;
 int *diag;
-int nElm;
+/*int nElm;*/ /*jjb 12072017 defined but unused*/
 int ibgn, iend;
 int useLangOld;
 int dim;
@@ -1864,7 +1864,7 @@ int dim;
 
   useLangOld = useLang;
   useLang = C_LANG;
-  nElm = NonZero( LU, 0, VarNr, irow, icol, crow, diag );
+  /*nElm = NonZero( LU, 0, VarNr, irow, icol, crow, diag );*/ /*jjb 12072017 defined but unused*/
   useLang = useLangOld;
 
   UseFile( linalgFile );
@@ -1917,7 +1917,7 @@ int *irow;
 int *icol;
 int *crow;
 int *diag;
-int nElm;
+/*int nElm;*/ /*jjb 12072017 defined but unused*/
 int ibgn, iend;
 int useLangOld;
 int **pos;
@@ -1935,7 +1935,7 @@ int dim;
 
   useLangOld = useLang;
   useLang = C_LANG;
-  nElm = NonZero( LU, 0, VarNr, irow, icol, crow, diag );
+  /*nElm = NonZero( LU, 0, VarNr, irow, icol, crow, diag );*/ /*jjb 12072017 defined but unused*/
   useLang = useLangOld;
 
   UseFile( linalgFile );
@@ -2350,10 +2350,10 @@ void GenerateGlobalHeader()
    Declare( VAR );
    Declare( FIX );
    WriteComment("VAR, FIX are chunks of array C");
-   F77_Inline("      EQUIVALENCE( %s(%d),%s(1) )",
+   F77_Inline("!      EQUIVALENCE( %s(%d),%s(1) )",
             varTable[C]->name, 1, varTable[VAR]->name );
    if ( FixNr > 0 ) { /*  mz_rs_20050121 */
-     F77_Inline("      EQUIVALENCE( %s(%d),%s(1) )",
+     F77_Inline("!      EQUIVALENCE( %s(%d),%s(1) )",
        varTable[C]->name, VarNr+1, varTable[FIX]->name );
    }
   }

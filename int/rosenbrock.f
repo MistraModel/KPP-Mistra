@@ -447,8 +447,8 @@
       PARAMETER (ONE  = 1.0d0)
       PARAMETER (DeltaMin = 1.0d-5)
 !~~~>  Locally called functions
-      KPP_REAL ros_ErrorNorm
-      EXTERNAL ros_ErrorNorm
+      KPP_REAL WLAMCH, ros_ErrorNorm
+      EXTERNAL WLAMCH, ros_ErrorNorm
 !~~~>  Statistics on the work performed
       INTEGER Nfun,Njac,Nstp,Nacc,Nrej,Ndec,Nsol,Nsng
       COMMON /Statistics/ Nfun,Njac,Nstp,Nacc,Nrej,
@@ -531,7 +531,7 @@
      &                   K(KPP_NVAR*(j-1)+1),1,Ynew,1)
            END DO
            Tau = T + ros_Alpha(istage)*Direction*H
-           CALL ode_Fun(Tau,Ynew,Fcn)
+           CALL FunTemplate(Tau,Ynew,Fcn)
          END IF ! if istage.EQ.1 elseif ros_NewF(istage)
          CALL WCOPY(KPP_NVAR,Fcn,1,K(ioffset+1),1)
          DO j = 1, istage-1
@@ -643,8 +643,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~> The time partial derivative of the function by finite differences
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      IMPLICIT NONE
-!      INCLUDE 'KPP_ROOT_Parameters.h' ! jjb Forcheck
+      IMPLICIT NONE	 
 
 !~~~> Input arguments
       KPP_REAL T, Roundoff, Y(KPP_NVAR), Fcn0(KPP_NVAR)
@@ -677,8 +676,7 @@
 !          -half the step size if LU decomposition fails and retry
 !          -exit after 5 consecutive fails
 ! --- --- --- --- --- --- --- --- --- --- --- --- ---
-      IMPLICIT NONE
-!      INCLUDE 'KPP_ROOT_Parameters.h' ! jjb Forcheck
+      IMPLICIT NONE	 
       INCLUDE 'KPP_ROOT_Sparse.h'
 
 !~~~> Input arguments
@@ -773,7 +771,6 @@
 
       RETURN
       END
-
 
 
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

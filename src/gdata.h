@@ -29,15 +29,15 @@
 
 ******************************************************************************/
 
-#define KPP_VERSION "2.2.3"
+#define KPP_VERSION "2.2.4_gc"
 
 #ifndef _GDATA_H_
 #define _GDATA_H_
 
 #include <stdio.h>
 
-#define MAX_EQN         400
-#define MAX_SPECIES     500
+#define MAX_EQN         800
+#define MAX_SPECIES     800
 #define MAX_SPNAME       30
 #define MAX_IVAL         40
 /* MAX_EQNTAG = max length of equation ID in eqn file */
@@ -95,6 +95,7 @@ typedef struct {
 		 char name[ MAX_SPNAME ];
                  char ival[ MAX_IVAL ];
                  ATOM atoms[ MAX_ATOMS ]; 
+                 int flux; /* msl_290416 */
 	       } SPECIES_DEF;
 
 typedef struct {
@@ -200,6 +201,7 @@ void CmdIntegrator( char *cmd );
 void CmdDriver( char *cmd );
 void CmdRun( char *cmd );
 void CmdStochastic( char *cmd );
+void CmdFlux( char *cmd );
 
 void Generate();
 
