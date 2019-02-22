@@ -45,16 +45,16 @@ int **LUstructJ;
 
 ICODE InlineCode[ INLINE_OPT ];
 
-int NSPEC, NVAR, NVARACT, NFIX, NREACT;
+int NSPEC, NVAR, NVARACT, NFIX, NREACT, NFLUX;
 int NVARST, NFIXST;
 /* int PI; */
 int C_DEFAULT, C;
 int DC;
 int ARP, JVRP, NJVRP, CROW_JVRP, IROW_JVRP, ICOL_JVRP;
-int V, F, VAR, FIX;
+int V, F, VAR, FIX, FLUX;
 int RCONST, RCT;
 int Vdot, P_VAR, D_VAR;
-int KR, A, BV, BR, IV;
+int KR, A, BV, BR, IV, RR;
 int JV, UV, JUV, JTUV, JVS;
 int JR, UR, JUR, JRS;
 int U1, U2, HU, HTU;
@@ -74,6 +74,7 @@ int RTOLS, TSTART, TEND, DT;
 int ATOL, RTOL, STEPMIN, STEPMAX, CFACTOR;
 int V_USER, CL;
 int NMLCV, NMLCF, SCT, PROPENSITY, VOLUME, IRCT;
+int FLUX_MAP;
 
 int Jac_NZ, LU_Jac_NZ, nzr;
 
@@ -131,6 +132,7 @@ int i,j;
 
   NSPEC   = DefConst( "NSPEC",   INT, "Number of chemical species" );
   NVAR    = DefConst( "NVAR",    INT, "Number of Variable species" );
+  NFLUX   = DefConst( "NFLUX",   INT, "Number of Reaction Flux species" );
   NVARACT = DefConst( "NVARACT", INT, "Number of Active species" );
   NFIX    = DefConst( "NFIX",    INT, "Number of Fixed species" );
   NREACT  = DefConst( "NREACT",  INT, "Number of reactions" );
@@ -145,6 +147,7 @@ int i,j;
 
   VAR = DefvElm( "VAR", real, -NVAR, "Concentrations of variable species (global)" );
   FIX = DefvElm( "FIX", real, -NFIX, "Concentrations of fixed species (global)" );
+  FLUX = DefvElm( "FLUX", real, -NFLUX, "Captured flux through reactions (global)" );
 
   V = DefvElm( "V", real, -NVAR, "Concentrations of variable species (local)" );
   F = DefvElm( "F", real, -NFIX, "Concentrations of fixed species (local)" );
@@ -180,6 +183,7 @@ int i,j;
   DT     = DefElm( "DT", real, "Integration step");
 
   A  = DefvElm( "A", real, -NREACT, "Rate for each equation" );
+  RR = DefvElm( "RR", real, -NREACT, "Flux for each equation" );
 
   ARP  = DefvElm( "ARP", real, -NREACT, "Reactant product in each equation" );
   NJVRP    = DefConst( "NJVRP",   INT, "Length of sparse Jacobian JVRP" );
@@ -247,6 +251,8 @@ int i,j;
   EQN_NAMES  = DefvElm( "EQN_NAMES", DOUBLESTRING, -NREACT, "Equation names" );
   SPC_NAMES  = DefvElm( "SPC_NAMES", STRING, -NSPEC, "Names of chemical species" );
 
+  FLUX_MAP   = DefvElm( "FLUX_MAP", INT, -NREACT, "Map-to-SPEC indeces for FLUX species" );
+
   CFACTOR  = DefElm( "CFACTOR", real, "Conversion factor for concentration units");
 
   /* Elements of Stochastic simulation*/
@@ -304,20 +310,6 @@ int i,j;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateGData()
 {
-int  i,j,k;
-int  *crow;
-int  *diag;
-int  nElm;
-int  *lookat;
-int  *moni;
-char *snames[MAX_SPECIES];
-int  *trans;
-char *strans[MAX_SPECIES];
-char *smass[MAX_ATOMS];
-char *EQN_NAMES[MAX_EQN];
-char *EQN_TAGS[MAX_EQN];
-char *bufeqn, *p;
-int dim;
 
   if ( (useLang != C_LANG)&&(useLang != MATLAB_LANG) ) return;
 
@@ -366,10 +358,9 @@ int dim;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateMonitorData()
 {
-int  i,j,k;
+int  i, j;
 int  *crow;
 int  *diag;
-int  nElm;
 int  *lookat;
 int  *moni;
 char *snames[MAX_SPECIES];
@@ -379,7 +370,7 @@ char *smass[MAX_ATOMS];
 char *seqn[MAX_EQN];
 char *bufeqn, *p;
 int dim;
-
+int flxind[MAX_EQN];
 
   /* Allocate local data structures */
   dim    = SpcNr+2;
@@ -404,6 +395,18 @@ int dim;
       snames[i] = SpeciesTable[Code[i]].name;
   }
   InitDeclare( SPC_NAMES, SpcNr, (void*)snames );
+
+  if (doFlux == 1) {
+    NewLines(1);
+    j = 0;
+    for (i = 0; i < SpcNr; i++) {
+      if ( SpeciesTable[ Code[i] ].flux ) {
+	flxind[j] = Index(i);
+	j++;
+      }
+    }
+    InitDeclare( FLUX_MAP, EqnNr, (void*)flxind );
+  }
 
   nlookat = 0;
   for (i = 0; i < SpcNr; i++)
@@ -507,7 +510,6 @@ int* irow;
 int* icol;
 int* crow;
 int* diag;
-int nElm;
 int dim;
 
   if( !useJacSparse ) return;
@@ -622,6 +624,7 @@ int F_VAR, FSPLIT_VAR;
     NewLines(1);
     WriteComment("Local variables");
     Declare( A );
+    WriteOMPThreadPrivate("A");
   }
   NewLines(1);
   WriteComment("Computation of equation rates");
@@ -665,6 +668,12 @@ int F_VAR, FSPLIT_VAR;
         sum = Add( sum, Mul( Const( Stoich[i][j] ), Elm( A, j ) ) );
       Assign( Elm( Vdot, i ), sum );
     }
+    for (i = VarNr; i < VarNr; i++) {
+      sum = Const(0);
+      for (j = 0; j < EqnNr; j++)
+        sum = Add( sum, Mul( Const( Stoich[i][j] ), Elm( A, j ) ) );
+      Assign( Elm( Vdot, i ), sum );
+    }
 
   } else {
 
@@ -680,6 +689,15 @@ int F_VAR, FSPLIT_VAR;
 
     NewLines(1);
     WriteComment("Destruction function");
+
+    /* msl_20160421
+    for (i = 0; i < VarNr; i++) {
+      sum = Const(0);
+      for (j = 0; j < EqnNr; j++)
+        sum = Add( sum, Mul( Const( Stoich_Left[i][j] ), Elm( A, j ) ) );
+      Assign( Elm( D_VAR, i ), sum );
+    }
+    */
 
     for (i = 0; i < VarNr; i++) {
       sum = Const(0);
@@ -719,9 +737,59 @@ int F_VAR, FSPLIT_VAR;
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+void GenerateFlux()
+{
+int i, j;
+int FLUX_VAR;
+
+  if( VarNr == 0 ) return;
+
+  /*  if (useLang != MATLAB_LANG) */ /* Matlab generates an additional file per function */
+  /*     UseFile( functionFile ); */
+
+  FLUX_VAR = DefFnc( "Flux", 3, "calculate production & loss terms from reaction flux");
+
+  FunctionBegin( FLUX_VAR, RR, P_VAR, D_VAR );
+
+  /*if ( (useLang==MATLAB_LANG)&&(!useAggregate) )
+    printf("\nWarning: in the flux definition move P_VAR to output vars\n");*/
+
+  NewLines(1);
+  WriteComment("Production function");
+
+  for (i = 0; i < VarNr; i++) {
+    sum = Const(0);
+    for (j = 0; j < EqnNr; j++)
+      sum = Add( sum, Mul( Const( Stoich_Right[i][j] ), Elm( RR, j ) ) );
+    Assign( Elm( P_VAR, i ), sum );
+  }
+
+  NewLines(1);
+  WriteComment("Destruction function");
+
+  /* msl_20160421 */
+  for (i = 0; i < VarNr; i++) {
+    sum = Const(0);
+    for (j = 0; j < EqnNr; j++)
+      sum = Add( sum, Mul( Const( Stoich_Left[i][j] ), Elm( RR, j ) ) );
+    Assign( Elm( D_VAR, i ), sum );
+  }
+
+
+  /*MATLAB_Inline("\n   P_VAR = P_VAR(:);\n   D_VAR = D_VAR(:);\n");*/
+
+  FunctionEnd( FLUX_VAR );
+  FreeVariable( FLUX_VAR );
+}
+
+
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateStochastic()
 {
-int i, j, k, l, m, n, jnr;
+int i, j, k, m, n, jnr;
 int used;
 int F_VAR;
 
@@ -846,8 +914,6 @@ int F_VAR;
 void GenerateReactantProd()
 {
 int i, j, k;
-int used;
-int l, m;
 int F_STOIC;
 
   if( VarNr == 0 ) return;
@@ -886,10 +952,15 @@ int F_STOIC;
 void GenerateJacReactantProd()
 {
 int i, j, k, l, m, JVRP_NZ, newrow;
-int used;
 int F_STOIC;
-int crow_JVRP[MAX_EQN], icol_JVRP[MAX_EQN*MAX_SPECIES];
-int irow_JVRP[MAX_EQN*MAX_SPECIES];
+
+/* jjb_01072016 start */
+/*int crow_JVRP[MAX_EQN], icol_JVRP[MAX_EQN*MAX_SPECIES];
+  int irow_JVRP[MAX_EQN*MAX_SPECIES];*/
+int *crow_JVRP;
+int *icol_JVRP;
+int *irow_JVRP;
+/* jjb_01072016 end */
 
   if( VarNr == 0 ) return;
 
@@ -900,6 +971,13 @@ int irow_JVRP[MAX_EQN*MAX_SPECIES];
          if ( Stoich_Left[j][i] != 0 ) JVRP_NZ++;
     varTable[ NJVRP ]  -> value  = JVRP_NZ + 1;
   }
+
+/* jjb_01072016 start */
+/* Allocate temporary index arrays */
+  crow_JVRP = AllocIntegerVector(EqnNr + 1, "crow_JVRP in GenerateJacReactantProd");
+  icol_JVRP = AllocIntegerVector(JVRP_NZ + 1, "icol_JVRP in GenerateJacReactantProd");
+  irow_JVRP = AllocIntegerVector(JVRP_NZ + 1, "irow_JVRP in GenerateJacReactantProd");
+/* jjb_01072016 end */
 
   UseFile( stoichiomFile );
 
@@ -1125,8 +1203,7 @@ void GenerateHessian()
 /* Unlike Hess, this function deffers the sparse Data structure generation */
 {
 int i, j, k;
-int used;
-int l, m, i1, i2, nElm;
+int m, i1, i2, nElm;
 int F_Hess, F_Hess_VEC, F_HessTR_VEC;
 int *coeff_j, *coeff_i1, *coeff_i2;
 int Djv_isElm;
@@ -2152,8 +2229,6 @@ void GenerateParamHeader()
 int spc;
 int i;
 char name[20];
-int offs;
-int mxyz;
 
 int j,dummy_species;
 
@@ -2163,6 +2238,7 @@ int j,dummy_species;
   NewLines(1);
   DeclareConstant( NSPEC,   ascii( max(SpcNr, 1) ) );
   DeclareConstant( NVAR,    ascii( max(VarNr, 1) ) );
+  DeclareConstant( NFLUX,   ascii( max(plNr+1,  1)  ) );
   DeclareConstant( NVARACT, ascii( max(VarActiveNr, 1) ) );
   DeclareConstant( NFIX,    ascii( max(FixNr, 1) ) );
   DeclareConstant( NREACT,  ascii( max(EqnNr, 1) ) );
@@ -2194,6 +2270,19 @@ int j,dummy_species;
     DeclareConstant( spc, ascii( Index(i) ) );
     FreeVariable( spc );
   }
+
+  /*if (doFlux == 1) {
+    NewLines(1);
+  WriteComment("Index declaration for flux accumulation species in C");
+  WriteComment("  C(ind_spc)");
+  NewLines(1);
+  for( i = 0; i < plNr; i++) {
+    sprintf( name, "ind_%s", SpeciesTable[ Code[i + VarNr] ].name );
+    spc = DefConst( name, INT, 0 );
+    DeclareConstant( spc, ascii( Index(i+VarNr) ) );
+    FreeVariable( spc );
+    }
+   }*/
 
   NewLines(1);
   WriteComment("Index declaration for fixed species in C");
@@ -2241,11 +2330,6 @@ int j,dummy_species;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateGlobalHeader()
 {
-int spc;
-int i;
-char name[20];
-int offs;
-int mxyz;
 
   UseFile( global_dataFile );
 
@@ -2276,10 +2360,10 @@ int mxyz;
      ExternDeclare( VAR );
      ExternDeclare( FIX );
      WriteComment("VAR, FIX are chunks of array C");
-     F90_Inline("      EQUIVALENCE( %s(%d),%s(1) )",
+     F90_Inline("!      EQUIVALENCE( %s(%d),%s(1) )",
             varTable[C]->name, 1, varTable[VAR]->name );
      if ( FixNr > 0 ) { /*  mz_rs_20050121 */
-       F90_Inline("      EQUIVALENCE( %s(%d),%s(1) )",
+       F90_Inline("!      EQUIVALENCE( %s(%d),%s(1) )",
          varTable[C]->name, VarNr+1, varTable[FIX]->name );
      }
   }
@@ -2806,7 +2890,7 @@ char buf[100], suffix[5];
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateMatlabTemplates()
 {
-char buf[200], suffix[5];
+char buf[200];
 
   if (useLang != MATLAB_LANG) return;
 
@@ -2898,6 +2982,7 @@ case 'h':
       F90_Inline("  USE %s_Parameters", rootFileName );
     F90_Inline("  IMPLICIT NONE\n", rootFileName );
     Declare( A ); /*  mz_rs_20050117 */
+    WriteOMPThreadPrivate(" A "); /* msl_20160419 */
     F90_Inline("\nCONTAINS\n\n");
 
   UseFile( rateFile );
@@ -3104,8 +3189,9 @@ default:
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void Generate()
 {
-int i, j;
+int i;
 int n;
+char suffix[3];
 
   VarStartNr = 0;
   FixStartNr = VarNr;
@@ -3121,15 +3207,23 @@ int n;
   outBuffer = outBuf;
 
   switch( useLang ) {
-    case F77_LANG: Use_F( rootFileName );
-                 break;
-    case F90_LANG: Use_F90( rootFileName );
-                 break;
-    case C_LANG: Use_C( rootFileName );
-                 break;
-    case MATLAB_LANG: Use_MATLAB( rootFileName );
-                 break;
-    default: printf("\n Language no '%s' unknown\n",useLang );
+    case F77_LANG:
+      Use_F( rootFileName );
+      sprintf( suffix, "f");
+      break;
+    case F90_LANG:
+      Use_F90( rootFileName );
+      sprintf( suffix, "f90");
+      break;
+    case C_LANG:
+      Use_C( rootFileName );
+      sprintf( suffix, "c");
+      break;
+    case MATLAB_LANG:
+      Use_MATLAB( rootFileName );
+      sprintf( suffix, "m");
+      break;
+    default: printf("\n Language no '%d' unknown\n",useLang );
   }
   printf("\nKPP is initializing the code generation.");
   InitGen();
@@ -3155,9 +3249,15 @@ int n;
   GenerateGData();
 
 
-  printf("\nKPP is generating the ODE function:");
+  if ( doFlux == 1 ) {
+    printf("\nKPP is generating the ODE function with flux enabled:");
+  }
+  else {
+    printf("\nKPP is generating the ODE function:");
+  }
   printf("\n    - %s_Function",rootFileName);
   GenerateFun();
+  if (doFlux == 1) GenerateFlux();
 
   if ( useStochastic ) {
     printf("\nKPP is generating the Stochastic description:");
@@ -3244,7 +3344,7 @@ int n;
     GenerateDJacDRcoeff();
   }
 
-  printf("\nKPP is generating the driver from %s.f90:", driver);
+  printf("\nKPP is generating the driver from %s.%s:", driver, suffix);
   printf("\n    - %s_Main",rootFileName);
 
   if ( (useLang == F77_LANG)||(useLang == F90_LANG)||(useLang == C_LANG) )
