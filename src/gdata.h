@@ -119,6 +119,7 @@ extern int AtomNr;
 extern int VarNr;
 extern int VarActiveNr;
 extern int FixNr;
+extern int plNr; 
 extern int VarStartNr;
 extern int FixStartNr;
 extern int Hess_NZ;
