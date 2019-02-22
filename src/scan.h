@@ -99,5 +99,6 @@ void WriteOptions();
 
 char * AppendString( char * s1, char * s2, int * len, int addlen );
 void AddInlineCode( char * context, char * code );
+int ParseEquationFile( char * filename );
 
 #endif

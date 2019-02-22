@@ -365,12 +365,14 @@ int  *lookat;
 int  *moni;
 char *snames[MAX_SPECIES];
 int  *trans;
-char *strans[MAX_SPECIES];
+/*char *strans[MAX_SPECIES];*/ /*jjb 12072017 defined but unused*/
 char *smass[MAX_ATOMS];
 char *seqn[MAX_EQN];
 char *bufeqn, *p;
 int dim;
 int flxind[MAX_EQN];
+int EqnString( int eq, char * buf );
+
 
   /* Allocate local data structures */
   dim    = SpcNr+2;
@@ -440,7 +442,7 @@ int flxind[MAX_EQN];
   for (i = 0; i < SpcNr; i++)
     if ( SpeciesTable[Code[i]].trans ) {
       trans[ntrans] = Index(i);
-      strans[ntrans] = SpeciesTable[Code[i]].name;
+      /*strans[ntrans] = SpeciesTable[Code[i]].name;*/ /*jjb 12072017 defined but unused*/
       ntrans++;
     }
 
@@ -2709,7 +2711,7 @@ int INITVAL;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateShuffle_user2kpp()
 {
-int i,k,l;
+int i,k;
 int Shuffle_user2kpp;
 
   UseFile( utilFile );
@@ -2717,7 +2719,7 @@ int Shuffle_user2kpp;
   Shuffle_user2kpp    = DefFnc( "Shuffle_user2kpp", 2, "function to copy concentrations from USER to KPP");
   FunctionBegin( Shuffle_user2kpp, V_USER, V );
 
-  k = 0;l = 0;
+  k = 0;
   for( i = 1; i < SpcNr; i++) {
     if( ReverseCode[i] < 0 ) {
       if( SpeciesTable[i].type == VAR_SPC ) k++;
@@ -2744,7 +2746,7 @@ int Shuffle_user2kpp;
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateShuffle_kpp2user()
 {
-int i,k,l;
+int i,k;
 int Shuffle_kpp2user;
 
   UseFile( utilFile );
@@ -2752,7 +2754,7 @@ int Shuffle_kpp2user;
   Shuffle_kpp2user    = DefFnc( "Shuffle_kpp2user", 2, "function to restore concentrations from KPP to USER");
   FunctionBegin( Shuffle_kpp2user, V, V_USER );
 
-  k = 0; l = 0;
+  k = 0;
   for( i = 0; i < SpcNr; i++) {
     if( ReverseCode[i] < 0 ) {
       if( SpeciesTable[i].type == VAR_SPC ) k++;
