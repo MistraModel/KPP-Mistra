@@ -643,7 +643,7 @@
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !~~~> The time partial derivative of the function by finite differences
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      IMPLICIT NONE	 
+      IMPLICIT NONE
 
 !~~~> Input arguments
       KPP_REAL T, Roundoff, Y(KPP_NVAR), Fcn0(KPP_NVAR)
@@ -676,7 +676,7 @@
 !          -half the step size if LU decomposition fails and retry
 !          -exit after 5 consecutive fails
 ! --- --- --- --- --- --- --- --- --- --- --- --- ---
-      IMPLICIT NONE	 
+      IMPLICIT NONE
       INCLUDE 'KPP_ROOT_Sparse.h'
 
 !~~~> Input arguments

@@ -47,7 +47,7 @@
   #define YYDEBUG 1
   extern char yytext[];
   extern FILE * yyin;
-  
+
   int nError   = 0;
   int nWarning = 0;
 
@@ -73,9 +73,9 @@
   char str[80];
 };
 
-%token JACOBIAN DOUBLE FUNCTION DEFVAR DEFRAD DEFFIX SETVAR SETRAD SETFIX 
+%token JACOBIAN DOUBLE FUNCTION DEFVAR DEFRAD DEFFIX SETVAR SETRAD SETFIX
 %token HESSIAN STOICMAT STOCHASTIC DECLARE
-%token INITVALUES EQUATIONS LUMP INIEQUAL EQNEQUAL EQNCOLON 
+%token INITVALUES EQUATIONS LUMP INIEQUAL EQNEQUAL EQNCOLON
 %token LMPCOLON LMPPLUS SPCPLUS SPCEQUAL ATOMDECL CHECK CHECKALL REORDER
 %token MEX DUMMYINDEX EQNTAGS
 %token LOOKAT LOOKATALL TRANSPORT TRANSPORTALL MONITOR USES SPARSEDATA
@@ -83,7 +83,7 @@
 %token USE LANGUAGE INTFILE DRIVER RUN INLINE ENDINLINE
 %token      PARAMETER SPCSPC INISPC INIVALUE EQNSPC EQNSIGN EQNCOEF
 %type <str> PARAMETER SPCSPC INISPC INIVALUE EQNSPC EQNSIGN EQNCOEF
-%token      RATE LMPSPC SPCNR ATOMID LKTID MNIID INLCTX INCODE SSPID 
+%token      RATE LMPSPC SPCNR ATOMID LKTID MNIID INLCTX INCODE SSPID
 %type <str> RATE LMPSPC SPCNR ATOMID LKTID MNIID INLCTX INCODE SSPID
 %token      EQNLESS EQNTAG EQNGREATER
 %type <str> EQNLESS EQNTAG EQNGREATER
@@ -131,32 +131,32 @@ section	        : JACOBIAN PARAMETER
 		  { CmdStochastic( $2 );
                   }
                 | ATOMDECL atomlist
-                  {}  
+                  {}
                 | CHECK atomlist
                   {}
                 | DEFVAR species
-                  {}  
+                  {}
                 | DEFRAD species
-                  {}  
+                  {}
                 | DEFFIX species
-                  {}  
+                  {}
                 | SETVAR setspclist
-                  {}  
+                  {}
                 | SETRAD setspclist
-                  {}  
+                  {}
                 | SETFIX setspclist
-                  {}  
+                  {}
                 | INITVALUES initvalues
                   {}
                 | EQUATIONS equations
                   {}
-                | LUMP lumps  
+                | LUMP lumps
                   {}
-                | LOOKAT lookatlist  
+                | LOOKAT lookatlist
                   {}
-                | MONITOR monitorlist  
+                | MONITOR monitorlist
                   {}
-                | TRANSPORT translist  
+                | TRANSPORT translist
                   {}
                 | CHECKALL
                   { CheckAll(); }
@@ -185,7 +185,7 @@ section	        : JACOBIAN PARAMETER
                 | ZGRID PARAMETER
                   { DefineZGrid( $2 ); }
 		| INLINE INLCTX inlinecode ENDINLINE
-		  { 
+		  {
 		    AddInlineCode( $2, InlineBuf );
                     free( InlineBuf );
 		  }
@@ -197,7 +197,7 @@ section	        : JACOBIAN PARAMETER
 		  { CmdDriver( $2 ); }
                 | RUN PARAMETER
 		  { CmdRun( $2 ); }
-                | USES uselist  
+                | USES uselist
                   {}
                 | SPARSEDATA PARAMETER
 		  { SparseData( $2 );
@@ -205,7 +205,7 @@ section	        : JACOBIAN PARAMETER
                 | FLUX PARAMETER
 		  { CmdFlux( $2 );
                   }
-                ;  
+                ;
 semicolon       : semicolon ';'
                   { ScanWarning("Unnecessary ';'");
                   }
@@ -222,7 +222,7 @@ atomdef		: ATOMID
                       case CHECK:    SetAtomType( $1, DO_CHECK ); break;
                     }
                   }
-                ;     
+                ;
 lookatlist	: lookatlist lookatspc semicolon
                 | lookatspc semicolon
                 | error semicolon
@@ -231,7 +231,7 @@ lookatlist	: lookatlist lookatspc semicolon
 lookatspc	: LKTID
                   { AddLookAt( $1 );
                   }
-                ;     
+                ;
 monitorlist	: monitorlist monitorspc semicolon
                 | monitorspc semicolon
                 | error semicolon
@@ -240,7 +240,7 @@ monitorlist	: monitorlist monitorspc semicolon
 monitorspc	: MNIID
                   { AddMonitor( $1 );
                   }
-                ;     
+                ;
 translist	: translist transspc semicolon
                 | transspc semicolon
                 | error semicolon
@@ -249,7 +249,7 @@ translist	: translist transspc semicolon
 transspc	: TPTID
                   { AddTransport( $1 );
                   }
-                ;     
+                ;
 uselist		: uselist usefile semicolon
                 | usefile semicolon
                 | error semicolon
@@ -258,7 +258,7 @@ uselist		: uselist usefile semicolon
 usefile		: USEID
                   { AddUseFile( $1 );
                   }
-                ;     
+                ;
 setspclist	: setspclist setspcspc semicolon
                 | setspcspc semicolon
                 | error semicolon
@@ -271,9 +271,9 @@ setspcspc	: SSPID
                       case SETFIX: SetSpcType( FIX_SPC, $1 ); break;
                     }
                   }
-                ;     
+                ;
 species         : species spc semicolon
-                | spc semicolon 
+                | spc semicolon
                 | error semicolon
                   { ParserErrorMessage(); }
                 ;
@@ -285,7 +285,7 @@ spcname         : SPCSPC SPCEQUAL atoms
                       case DEFVAR: DeclareSpecies( VAR_SPC, $1 ); break;
                       case DEFRAD: DeclareSpecies( RAD_SPC, $1 ); break;
                       case DEFFIX: DeclareSpecies( FIX_SPC, $1 ); break;
-                    } 
+                    }
                   }
                 ;
 spcdef          : SPCSPC
@@ -293,19 +293,19 @@ spcdef          : SPCSPC
                       case DEFVAR: DeclareSpecies( VAR_SPC, $1 ); break;
                       case DEFRAD: DeclareSpecies( RAD_SPC, $1 ); break;
                       case DEFFIX: DeclareSpecies( FIX_SPC, $1 ); break;
-                    } 
+                    }
                   }
                 ;
-atoms           : atoms SPCPLUS atom 
+atoms           : atoms SPCPLUS atom
                 | atom
-                ; 
+                ;
 atom            : SPCNR SPCSPC
                   { AddAtom( $2, $1 );
                   }
                 | SPCSPC
                   { AddAtom( $1, "1" );
                   }
-                ;   
+                ;
 initvalues      : initvalues assignment semicolon
                 | assignment semicolon
                 | error semicolon
@@ -318,43 +318,43 @@ equations       : equations equation semicolon
                 | equation semicolon
                 | error semicolon
                   { ParserErrorMessage();
-                    eqState = LHS; 
+                    eqState = LHS;
                   }
                 ;
 equation        : eqntag lefths righths rate
                   { eqState = LHS;
-                    StoreEquationRate( $4, $1 ); 
+                    StoreEquationRate( $4, $1 );
                     CheckEquation();
                   }
                 | lefths righths rate
                   { eqState = LHS;
-                    StoreEquationRate( $3, "          " ); 
+                    StoreEquationRate( $3, "          " );
                     CheckEquation();
                   }
 rate            : RATE rate
                   { strcpy( $$, $1 );
-                    strcat( $$, $2 ); 
-                  } 
+                    strcat( $$, $2 );
+                  }
                 | RATE
                   { strcpy( $$, $1 );
-                  } 
-                ;                  
+                  }
+                ;
 eqntag           : EQNLESS EQNTAG EQNGREATER
                   { strcpy( $$, $2 );
-                  } 
-                ;                  
+                  }
+                ;
 lefths          : expresion EQNEQUAL
                   { eqState = RHS; }
-                ;   
+                ;
 righths         : expresion EQNCOLON
-                   { ProcessTerm( eqState, "+", "1", "RR" ); /*Add a prod/loss species as last prod.*/ 
+                   { ProcessTerm( eqState, "+", "1", "RR" ); /*Add a prod/loss species as last prod.*/
 		    eqState = RAT;
 		  }
                 ;
 expresion       : expresion EQNSIGN term
-                  { ProcessTerm( eqState, $2, crt_coef, crt_term ); 
+                  { ProcessTerm( eqState, $2, crt_coef, crt_term );
                   }
-                | EQNSIGN term 
+                | EQNSIGN term
                   { ProcessTerm( eqState, $1, crt_coef, crt_term );
                   }
                 | term
@@ -363,15 +363,15 @@ expresion       : expresion EQNSIGN term
                 ;
 term            : EQNCOEF EQNSPC
                   { strcpy( crt_term, $2 );
-                    strcpy( crt_coef, $1 );  
+                    strcpy( crt_coef, $1 );
                   }
                 | EQNSPC
-                  { strcpy( crt_term, $1 );         
-                    strcpy( crt_coef, "1" ); 
+                  { strcpy( crt_term, $1 );
+                    strcpy( crt_coef, "1" );
                   }
                 ;
 lumps           : lumps lump semicolon
-                | lump semicolon 
+                | lump semicolon
                 | error semicolon
                   { ParserErrorMessage(); }
                 ;
@@ -381,19 +381,19 @@ lump            : LMPSPC LMPPLUS lump
                 | LMPSPC LMPCOLON LMPSPC
                   {
                     AddLumpSpecies( $1 );
-                    CheckLump( $3 );  
+                    CheckLump( $3 );
                   }
 inlinecode      : inlinecode INCODE
 		  {
 		    InlineBuf = AppendString( InlineBuf, $2, &InlineLen, MAX_INLINE );
 		  }
-                | INCODE 
+                | INCODE
 		  {
-		    InlineBuf = malloc( MAX_INLINE ); 
+		    InlineBuf = malloc( MAX_INLINE );
                     InlineLen = MAX_INLINE;
 		    strcpy( InlineBuf, $1);
 		  }
-                ;  
+                ;
 %%
 
 void yyerror( char * str )
@@ -404,7 +404,7 @@ void ParserErrorMessage()
 {
   /* yyerrok; */
 /*
-  Message("[%d,%s] -> [%d,%s]", crtTokType, crtToken, nextTokType, nextToken );  
+  Message("[%d,%s] -> [%d,%s]", crtTokType, crtToken, nextTokType, nextToken );
 */
   if( crtToken[0] == ';' ) {
     ParserError("Misplaced ';'");
@@ -413,65 +413,65 @@ void ParserErrorMessage()
   switch( crtTokType ) {
     case ATOMID:
       ParserError("Missing ';' after '%s'", crtToken );
-      break; 
+      break;
 
-    case SPCSPC: 
+    case SPCSPC:
       ParserError("Missing ';' or '+' after '%s'", crtToken );
-      break; 
+      break;
     case SPCNR:
       ParserError("Missing species after '%s'", crtToken );
-      break; 
+      break;
     case SPCPLUS:
       ParserError("Missing atom after '%s'", crtToken );
-      break; 
+      break;
     case SPCEQUAL:
       ParserError("Invalid '=' after '%s'", crtToken );
-      break; 
+      break;
 
-    case INISPC: 
+    case INISPC:
       ParserError("Missing '=' after '%s'", crtToken );
-      break; 
-    case INIEQUAL: 
+      break;
+    case INIEQUAL:
       ParserError("Missing value after '%s'", crtToken );
-      break; 
-    case INIVALUE: 
+      break;
+    case INIVALUE:
       ParserError("Missing ';' after '%s'", crtToken );
-      break; 
+      break;
 
-    case EQNSPC: 
+    case EQNSPC:
       ParserError("Missing '+' or '=' after '%s'", crtToken );
-      break; 
-    case EQNEQUAL: 
+      break;
+    case EQNEQUAL:
       ParserError("Invalid right hand side of equation");
-      break; 
-    case EQNCOLON: 
+      break;
+    case EQNCOLON:
       ParserError("Missing rate after '%s'", crtToken );
-      break; 
-    case EQNSIGN: 
+      break;
+    case EQNSIGN:
       ParserError("Missing coeficient after '%s'", crtToken );
-      break; 
-    case EQNCOEF: 
+      break;
+    case EQNCOEF:
       ParserError("Missing species after '%s'", crtToken );
-      break; 
-    case RATE: 
+      break;
+    case RATE:
       ParserError("Missing ';' after '%s'", crtToken );
-      break; 
+      break;
 
-    case LMPSPC: 
+    case LMPSPC:
       ParserError("Missing '+' or ':' or ';' after '%s'", crtToken );
-      break; 
-    case LMPPLUS: 
+      break;
+    case LMPPLUS:
       ParserError("Missing species after '%s'", crtToken );
-      break; 
-    case LMPCOLON: 
+      break;
+    case LMPCOLON:
       ParserError("Missing species after '%s'", crtToken );
-      break; 
+      break;
     case INLINE:
       ParserError("Missing inline option after '%s'", crtToken );
       break;
 
     default:
-      ParserError("Syntax error after '%s'", crtToken ); 
+      ParserError("Syntax error after '%s'", crtToken );
   }
 }
 
@@ -486,8 +486,8 @@ FILE *f;
   f = fopen( crt_filename, "r" );
   if( f == 0 ) {
     FatalError(7,"%s: File not found", crt_filename);
-  } 
-  
+  }
+
   yyin = f;
   nError   = 0;
   nWarning = 0;
@@ -498,5 +498,4 @@ FILE *f;
   fclose( f );
 
   return nError;
-}          
-
+}

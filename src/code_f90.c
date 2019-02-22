@@ -37,7 +37,7 @@
 
 #define MAX_LINE 120
 
-char *F90_types[] = { "",                   /* VOID */ 
+char *F90_types[] = { "",                   /* VOID */
                     "INTEGER",            /* INT */
                     "REAL(kind=sp)",      /* FLOAT */
                     "REAL(kind=dp)",      /* DOUBLE */
@@ -93,7 +93,7 @@ void F90_WriteSymbol( int op )
                 AllowBreak();
     		break;
     case POW:   bprintf("power");
-                break;		
+                break;
     case O_PAREN: bprintf("(");
                 AllowBreak();
                 break;
@@ -119,11 +119,11 @@ int crtident;
                                should work for every compiler*/
 int number_of_lines = 1, MAX_NO_OF_LINES = 36;
 
-/*  Operator Mapping: 0xaa = '*' | 0xab = '+' | 0xac = ',' 
-                      0xad = '-' | 0xae ='.' | 0xaf = '/' */		      
-/* char op_mult=0xaa, op_plus=0xab, op_minus=0xad, op_dot=0xae, op_div=0xaf; */		      
-char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/';		      
-  
+/*  Operator Mapping: 0xaa = '*' | 0xab = '+' | 0xac = ','
+                      0xad = '-' | 0xae ='.' | 0xaf = '/' */
+/* char op_mult=0xaa, op_plus=0xab, op_minus=0xad, op_dot=0xae, op_div=0xaf; */
+char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/';
+
   crtident = 2 + ident * 2;
   bprintf("%*s%s = ", crtident, "", ls);
   start = strlen( ls ) + 2;
@@ -162,7 +162,7 @@ char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/';
       linelg++;
       first = 0;
     } else {/* continuation line in a split row - but not last line*/
-      bprintf("&\n     %*s&%s", start, "", rs );		
+      bprintf("&\n     %*s&%s", start, "", rs );
       if ( jfound ) {
          bprintf("\n%*s%s = %s", crtident, "", ls, ls);
 	 number_of_lines = 1;
@@ -216,8 +216,8 @@ char buf[ MAX_LINE ];
   va_end( args );
   /* remove trailing spaces */
   /* taken from http://www.cs.bath.ac.uk/~pjw/NOTES/ansi_c/ch10-idioms.pdf */
-  for (n= strlen(buf) - 1; n >= 0; n--) 
-    if (buf[n] != ' ') break; 
+  for (n= strlen(buf) - 1; n >= 0; n--)
+    if (buf[n] != ' ') break;
   buf[n + 1]= '\0';
   bprintf( "!$OMP THREADPRIVATE( %s )\n", buf );
   FlushBuf();
@@ -281,9 +281,9 @@ char maxj[20];
                 /*if( (var->maxj == 0) ||
                     ((var->maxj < 0 ) && (varTable[ -var->maxj ]->maxi == 0)) )
                   strcat( maxj, "+1");*/
-                /*sprintf( buf, "%s, DIMENSION(%s,%s) :: %s",			
+                /*sprintf( buf, "%s, DIMENSION(%s,%s) :: %s",
                          baseType, maxi, maxj,var->name ); */
-                sprintf( buf, "%s :: %s(%s,%s)",			
+                sprintf( buf, "%s :: %s(%s,%s)",
                          baseType, var->name, maxi, maxj );
 		break;
     default:
@@ -309,7 +309,7 @@ char maxi[20];
 char maxj[20];
 int maxCols = MAX_COLS;
 char dsbuf[200];
- 
+
  int i_from, i_to;
  int isplit;
  int splitsize;
@@ -331,7 +331,7 @@ char dsbuf[200];
 
   *buf = 0;
 
-  switch( var->type ) {	
+  switch( var->type ) {
     case ELM:
 	    bprintf( "  %s :: %s = ", baseType, var->name );
 		switch ( var->baseType ) {
@@ -436,7 +436,7 @@ char dsbuf[200];
       }
 
       break;
-				
+
     case MELM:  if( var->maxi > 0 ) sprintf( maxi, "%d", var->maxi );
                   else sprintf( maxi, "%s", varTable[ -var->maxi ]->name );
                 if( (var->maxi == 0) ||
@@ -447,7 +447,7 @@ char dsbuf[200];
                 if( (var->maxj == 0) ||
                     ((var->maxj < 0 ) && (varTable[ -var->maxj ]->maxi == 0)) )
                   strcat( maxj, "+1");
-                sprintf( buf, "%s, DIMENSION(%s,%s) :: %s\n",	/* changed here */		
+                sprintf( buf, "%s, DIMENSION(%s,%s) :: %s\n",	/* changed here */
                          baseType, maxi, maxj,var->name );
 		break;
     default:
@@ -503,7 +503,7 @@ char dummy_val[100];           /* used just to avoid strange behaviour of
     F90_WriteComment( "%s - %s", var->name, var->comment );
 
   switch( var->type ) {
-    case CONST: bprintf("  %s, PARAMETER :: %s = %s \n",	
+    case CONST: bprintf("  %s, PARAMETER :: %s = %s \n",
                        F90_types[ var->baseType ], var->name, val );
                 break;
     default:
@@ -516,13 +516,13 @@ char dummy_val[100];           /* used just to avoid strange behaviour of
 
 
 /*************************************************************************************************/
-void F90_WriteVecData( VARIABLE * var, int min, int max, int split )	
+void F90_WriteVecData( VARIABLE * var, int min, int max, int split )
 {
 char buf[80];
 char *p;
 
   if( split )
-    sprintf( buf, "%6sdata( %s(i), i = %d, %d ) / &\n%5s", 		
+    sprintf( buf, "%6sdata( %s(i), i = %d, %d ) / &\n%5s",
                 " ", var->name, min, max, " " );
   else
     sprintf( buf, "%6sdata %s / &\n%5s",
@@ -590,7 +590,7 @@ char dsbuf[55];
                  case DOUBLE:
                  case REAL:bprintf( "%lg", *dval ); break;
                  case STRING:bprintf( "'%s'", *cval ); break;
-                 case DOUBLESTRING:		
+                 case DOUBLESTRING:
 		        strncpy( dsbuf, *cval, 54 ); dsbuf[54]='\0';
 		        bprintf( "'%s'", dsbuf ); maxCols=1; break;
                         /* bprintf( "'%50s'", *cval ); break; */
