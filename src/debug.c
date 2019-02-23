@@ -145,3 +145,4 @@ void WriteOptions()
   if( useEqntags)        printf("EQNTAGS - ON\n");
 		    else printf("EQNTAGS - OFF\n");
 }
+
