@@ -106,7 +106,7 @@ int useEqntags     = 0;
 int useLang        = F77_LANG;
 int useStochastic  = 0;
 int doFlux         = 0;
-/* if useValues=1 KPP replaces parameters like NVAR etc.
+/* if useDeclareValues=1 KPP replaces parameters like NVAR etc.
        by their values in vector/matrix declarations */
 int useDeclareValues = 0;
 
@@ -713,7 +713,7 @@ char eqNr[40]; /* msl_270416 */
      strcpy( spstr, spname );
      strcat( spstr, eqNr );
      DeclareSpecies( PL_SPC, spstr );
-     /*printf("\nAdded species %s to %d (LHS=%d; RHS=%d)",spstr,side,LHS,RHS); /*msl*/
+     /*printf("\nAdded species %s to %d (LHS=%d; RHS=%d)",spstr,side,LHS,RHS);*/ /*msl*/
    }
    else {
      return;
@@ -853,7 +853,6 @@ void AddUseFile( char *fname )
 
 char * AppendString( char * s1, char * s2, int * maxlen, int addlen )
 {
-char * tmp;
 
   *maxlen += addlen;
 
@@ -871,7 +870,6 @@ char * tmp;
 
 char * ReplaceString( char * s1, char * s2, int * maxlen, int addlen )
 {
-char * tmp;
 
   if( s1 ) free(s1);
 
@@ -961,3 +959,4 @@ int code;
 
   return code;
 }
+

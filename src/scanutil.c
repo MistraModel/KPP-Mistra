@@ -148,14 +148,14 @@ int noext;
   strcpy(name, fname);
   p = name + strlen(name);
   noext = 1;
-  while( p > name ) {
+  while( p > name ) {  
     if( *p == '.') {
-      noext = 0;
+      noext = 0; 
       break;
     }
     if( *p == '/' ) break;
     p--;
-  }
+  } 
 
   if( noext ) strcat(name, ext);
 
@@ -163,9 +163,9 @@ int noext;
   if( fp ) {
     fclose(fp);
     return name;
-  }
-
-  path = getenv(env);
+  }  
+   
+  path = getenv(env); 
   if( path ) {
     crtpath = path;
     p = pathname;
@@ -181,7 +181,7 @@ int noext;
         if( fp ) {
           fclose(fp);
           return pathname;
-        }
+        }  
         if (*crtpath==0) break;
         crtpath++;
         p = pathname;
@@ -190,13 +190,13 @@ int noext;
       *p++ = *crtpath++;
     }
   }
-
+  
   sprintf(pathname, "%s/%s/%s", Home, dir, name);
   fp = fopen(pathname,"r");
   if( fp ) {
     fclose(fp);
     return pathname;
-  }
-
+  }  
+    
   return name;
 }
