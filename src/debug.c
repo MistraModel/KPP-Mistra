@@ -51,11 +51,11 @@ int i;
         printf( "\n(%3d) %6s, -- -- CANCEL", i, AtomTable[i].name );
         break;
       default:
-        printf( "\n(%3d) %6s, -- -- ------ UNKNOWN [%d]", i,
+        printf( "\n(%3d) %6s, -- -- ------ UNKNOWN [%d]", i, 
                 AtomTable[i].name, AtomTable[i].check );
         break;
     }
-  }
+  }  
 }
 
 void WriteSpecies()
@@ -66,7 +66,7 @@ char *type;
 char *lookat;
 
   printf("\nSPC -----------------------------------------------" );
-
+  
   for( i = 0; i < SpeciesNr; i++ ) {
 
     switch( SpeciesTable[i].type ) {
@@ -77,18 +77,18 @@ char *lookat;
     }
 
     switch( SpeciesTable[i].lookat ) {
-      case 0:	   lookat = "----"; break;
-      case 1:	   lookat = "LOOK"; break;
+      case 0:	   lookat = "----"; break; 
+      case 1:	   lookat = "LOOK"; break; 
       default:     lookat = "????"; break;
     }
 
-    printf( "\n(%3d) %-10s, type %s,%s {",
+    printf( "\n(%3d) %-10s, type %s,%s {", 
              i, SpeciesTable[i].name, type, lookat );
     for( j = 0; j < SpeciesTable[i].nratoms; j++ )
-      printf( " %d%s", SpeciesTable[i].atoms[j].nr,
+      printf( " %d%s", SpeciesTable[i].atoms[j].nr, 
                        AtomTable[ SpeciesTable[i].atoms[j].code ].name );
     printf("}");
-  }
+  }  
 }
 
 void WriteMatrices()
@@ -133,7 +133,7 @@ void WriteOptions()
      case JAC_FULL: printf("JACOBIAN - FULL\n"); break;
      case JAC_LU_ROW: printf("JACOBIAN - SPARSE W/ ACCOUNT FOR LU DECOMPOSITION FILL-IN\n"); break;
      case JAC_ROW: printf("JACOBIAN - SPARSE\n"); break;
-  }
+  }		    
   if( useDouble )       printf("DOUBLE   - ON\n");
 		    else printf("DOUBLE   - OFF\n");
   if( useReorder )      printf("REORDER  - ON\n");

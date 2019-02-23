@@ -96,7 +96,7 @@ void F90_WriteSymbol( int op )
                 AllowBreak();
     		break;
     case POW:   bprintf("power");
-                break;
+                break;		
     case O_PAREN: bprintf("(");
                 AllowBreak();
                 break;
@@ -168,7 +168,7 @@ char op_plus='+', op_minus='-';
       linelg++;
       first = 0;
     } else {/* continuation line in a split row - but not last line*/
-      bprintf("&\n     %*s&%s", start, "", rs );
+      bprintf("&\n     %*s&%s", start, "", rs );		
       if ( jfound ) {
          bprintf("\n%*s%s = %s", crtident, "", ls, ls);
 	 number_of_lines = 1;
@@ -287,9 +287,9 @@ char maxj[20];
                 /*if( (var->maxj == 0) ||
                     ((var->maxj < 0 ) && (varTable[ -var->maxj ]->maxi == 0)) )
                   strcat( maxj, "+1");*/
-                /*sprintf( buf, "%s, DIMENSION(%s,%s) :: %s",
+                /*sprintf( buf, "%s, DIMENSION(%s,%s) :: %s",			
                          baseType, maxi, maxj,var->name ); */
-                sprintf( buf, "%s :: %s(%s,%s)",
+                sprintf( buf, "%s :: %s(%s,%s)",			
                          baseType, var->name, maxi, maxj );
 		break;
     default:
@@ -335,7 +335,7 @@ int maxCols = MAX_COLS;
 
   *buf = 0;
 
-  switch( var->type ) {
+  switch( var->type ) {	
     case ELM:
 	    bprintf( "  %s :: %s = ", baseType, var->name );
 		switch ( var->baseType ) {
@@ -443,7 +443,7 @@ int maxCols = MAX_COLS;
       }
 
       break;
-
+				
     case MELM:  if( var->maxi > 0 ) sprintf( maxi, "%d", var->maxi );
                   else sprintf( maxi, "%s", varTable[ -var->maxi ]->name );
                 if( (var->maxi == 0) ||
@@ -454,7 +454,7 @@ int maxCols = MAX_COLS;
                 if( (var->maxj == 0) ||
                     ((var->maxj < 0 ) && (varTable[ -var->maxj ]->maxi == 0)) )
                   strcat( maxj, "+1");
-                sprintf( buf, "%s, DIMENSION(%s,%s) :: %s\n",	/* changed here */
+                sprintf( buf, "%s, DIMENSION(%s,%s) :: %s\n",	/* changed here */		
                          baseType, maxi, maxj,var->name );
 		break;
     default:
@@ -510,7 +510,7 @@ char dummy_val[100];           /* used just to avoid strange behaviour of
     F90_WriteComment( "%s - %s", var->name, var->comment );
 
   switch( var->type ) {
-    case CONST: bprintf("  %s, PARAMETER :: %s = %s \n",
+    case CONST: bprintf("  %s, PARAMETER :: %s = %s \n",	
                        F90_types[ var->baseType ], var->name, val );
                 break;
     default:
@@ -523,12 +523,12 @@ char dummy_val[100];           /* used just to avoid strange behaviour of
 
 
 /*************************************************************************************************/
-void F90_WriteVecData( VARIABLE * var, int min, int max, int split )
+void F90_WriteVecData( VARIABLE * var, int min, int max, int split )	
 {
 char buf[80];
 
   if( split )
-    sprintf( buf, "%6sdata( %s(i), i = %d, %d ) / &\n%5s",
+    sprintf( buf, "%6sdata( %s(i), i = %d, %d ) / &\n%5s", 		
                 " ", var->name, min, max, " " );
   else
     sprintf( buf, "%6sdata %s / &\n%5s",
@@ -596,7 +596,7 @@ char dsbuf[55];
                  case DOUBLE:
                  case REAL:bprintf( "%lg", *dval ); break;
                  case STRING:bprintf( "'%s'", *cval ); break;
-                 case DOUBLESTRING:
+                 case DOUBLESTRING:		
 		        strncpy( dsbuf, *cval, 54 ); dsbuf[54]='\0';
 		        bprintf( "'%s'", dsbuf ); maxCols=1; break;
                         /* bprintf( "'%50s'", *cval ); break; */
