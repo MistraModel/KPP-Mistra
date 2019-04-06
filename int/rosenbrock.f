@@ -29,8 +29,8 @@ c copied from ros3.def
 c      STEPSTART=STEPMIN
 !      STEPSTART=1.d-3
       do i=1,NVAR
-         RTOL(i) = 1.d-3
-         ATOL(i) = 1.d-14
+         RTOL(i) = 1.d-2
+         ATOL(i) = 1.d-18
       enddo
 c <rvg
 ! <jjb
@@ -44,8 +44,8 @@ c <rvg
      
       IPAR(1) = 0       ! non-autonomous
       IPAR(2) = 1       ! vector tolerances
-!     IPAR(4) = 5       ! choice of the method
-      IPAR(4) = 2       ! choice of the method ! jjb ros 3 choice for mistra
+      IPAR(4) = 5       ! choice of the method
+!      IPAR(4) = 2       ! choice of the method ! jjb ros 3 choice for mistra
       RPAR(1) = SPACING(MIN(TIN,TOUT)) ! Hmin is defined so that T + Hmin /= T
 !     RPAR(3) = STEPMIN ! starting step
       RPAR(3) = 1.d-3   ! starting step       ! jjb change following RvG settings for mistra
@@ -507,7 +507,8 @@ c <rvg
         CALL ros_ErrorMsg(-6,T,H,IERR)
         RETURN
       END IF
-      IF ( ((T+0.1d0*H).EQ.T).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
+!      IF ( ((T+0.1d0*H).EQ.T).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
+      IF ( ((T+H).EQ.T) ) THEN  ! Step size too small
 ! jjb: use intrinsic Fortran function "spacing",
 !      which should result in a more accurate test (differences will occur if
 !      0.1*H < spacing(T) <= H
@@ -668,7 +669,8 @@ c <rvg
       
       Err = ZERO
       DO i=1,KPP_NVAR
-        Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
+!        Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
+        Ymax = ABS(Y(i))
         IF (VectorTol) THEN
           Scale = AbsTol(i)+RelTol(i)*Ymax
         ELSE
