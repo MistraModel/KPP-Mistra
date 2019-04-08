@@ -7,8 +7,7 @@ Builds simulation code for chemical kinetic systems (for version, see
 
 Copyright (C) 1995-1997 Valeriu Damian and Adrian Sandu, CGRER, Univ. Iowa (USA).
 
-Copyright (C) 1997-2016 Adrian Sandu, Michigan Tech. & Virginia Tech. (USA), with contributions from Rolf Sander, Max-Planck Institute for
-Chemistry, Mainz (Germany).
+Copyright (C) 1997-2016 Adrian Sandu, Michigan Tech. & Virginia Tech. (USA), with contributions from Rolf Sander, Max-Planck Institute for Chemistry, Mainz (Germany).
 
 KPP is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free
@@ -35,7 +34,7 @@ E-mail: sandu@cs.vt.edu
 
 __KPP__ is a symbolic chemistry Kinetics PreProcessor, developed by
 V. Damian and A. Sandu with contribution by R. Sander
-(http://www.cs.vt.edu/~asandu/Software/Kpp).
+(https://people.cs.vt.edu/~asandu/Software/Kpp).
 
 __KPP-Mistra__ is a custom version of KPP for the Mistra model
 (https://github.com/MistraModel/Mistra). It was developed starting
@@ -104,3 +103,5 @@ If you have any problems please send the detailed error report and the machine
 environment to:
 
 sandu@cs.vt.edu
+
+To acknowledge and cite KPP, see instructions on: https://people.cs.vt.edu/~asandu/Software/Kpp/.
