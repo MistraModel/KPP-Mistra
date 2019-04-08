@@ -56,9 +56,9 @@ UPDATED: April 2019
 The changes listed above have been applied and documented with pull requests #1-#5 and #9
 in the __KPP-Mistra__ repository (https://github.com/MistraModel/KPP-Mistra).
 
-Additional changes by P. Brauer & R. Sommariva:
+Additional changes by P. Bräuer & R. Sommariva:
 
 - Move license file to main directory and delete `gpl/` directory.
 - Update and format files `README.md` and `CHANGELOG.md`.
 - Delete file `diff_version_rolf_sander.txt`.
-- Delete directory `int.modified_WCOPY/` (backup version of `int/?`).
+- Delete directory `int.modified_WCOPY/` (backup/old version of `int/`?).

@@ -43,12 +43,11 @@ R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus some
 additional modifications specific to Mistra by J. Bock. See
 `CHANGELOG.md` for a summary of the changes.
 
-The stable version of KPP-Mistra can be downloaded here:
-https://github.com/MistraModel/KPP-Mistra/releases.
+The stable version of KPP-Mistra can be downloaded [here])https://github.com/MistraModel/KPP-Mistra/releases).
 
 ******************************************************************************
 
-__To get started with KPP:__  Read user's manual (`doc/kpp_UserManual.pdf`)
+__To get started with KPP:__  Read [user's manual](doc/kpp_UserManual.pdf)
 
 
 __To install KPP:__
