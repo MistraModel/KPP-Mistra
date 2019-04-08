@@ -5,11 +5,10 @@ __KPP__ - The Kinetic PreProcessor
 Builds simulation code for chemical kinetic systems (for version, see
 `src/gdata.h`).
 
-Copyright (C) 1995-1997 Valeriu Damian and Adrian Sandu, CGRER, Univ. Iowa, USA
+Copyright (C) 1995-1997 Valeriu Damian and Adrian Sandu, CGRER, Univ. Iowa (USA).
 
-Copyright (C) 1997-2016 Adrian Sandu Michigan Tech, Virginia Tech,
-USA, with contributions from Rolf Sander, Max-Planck Institute for
-Chemistry, Mainz, Germany
+Copyright (C) 1997-2016 Adrian Sandu, Michigan Tech. & Virginia Tech. (USA), with contributions from Rolf Sander, Max-Planck Institute for
+Chemistry, Mainz (Germany).
 
 KPP is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free
@@ -42,7 +41,8 @@ __KPP-Mistra__ is a custom version of KPP for the Mistra model
 (https://github.com/MistraModel/Mistra). It was developed starting
 from KPP v2.2.3 and includes all the bugfixes and modifications by
 R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus some
-additional modifications specific to Mistra by J. Bock.
+additional modifications specific to Mistra by J. Bock. See
+`CHANGELOG.md` for a summary of the changes.
 
 The stable version of KPP-Mistra can be downloaded here:
 https://github.com/MistraModel/KPP-Mistra/releases.
