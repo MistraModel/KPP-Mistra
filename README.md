@@ -41,7 +41,7 @@ __KPP-Mistra__ is a custom version of KPP for the Mistra model
 from KPP v2.2.3 and includes all the bugfixes and modifications by
 R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus some
 additional modifications specific to Mistra by J. Bock. See
-`CHANGELOG.md` for a summary of the changes.
+[changelog](CHANGELOG.md) for a summary of the changes.
 
 The stable version of KPP-Mistra can be downloaded [here])https://github.com/MistraModel/KPP-Mistra/releases).
 
@@ -99,8 +99,6 @@ __To clean the KPP installation:__
 
 
 If you have any problems please send the detailed error report and the machine
-environment to:
-
-sandu@cs.vt.edu
+environment to: sandu@cs.vt.edu
 
 To acknowledge and cite KPP, see instructions on: https://people.cs.vt.edu/~asandu/Software/Kpp/.
