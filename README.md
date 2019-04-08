@@ -1,5 +1,3 @@
-******************************************************************************
-
 __KPP__ - The Kinetic PreProcessor
 
 Builds simulation code for chemical kinetic systems (for version, see
@@ -24,10 +22,10 @@ could also consult http://www.gnu.org/copyleft/gpl.html or write to the
 Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 02111-1307, USA.
 
-Adrian Sandu
-Computer Science Department
-Virginia Polytechnic Institute and State University
-Blacksburg, VA 24060
+Adrian Sandu  
+Computer Science Department  
+Virginia Polytechnic Institute and State University  
+Blacksburg, VA 24060, USA  
 E-mail: sandu@cs.vt.edu
 
 ******************************************************************************
@@ -40,10 +38,11 @@ __KPP-Mistra__ is a custom version of KPP for the Mistra model
 (https://github.com/MistraModel/Mistra). It was developed starting
 from KPP v2.2.3 and includes all the bugfixes and modifications by
 R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus some
-additional modifications specific to Mistra by J. Bock. See
-[changelog](CHANGELOG.md) for a summary of the changes.
+additional modifications specific to Mistra by J. Bock. See the
+[changelog](CHANGELOG.md) file for a summary of the changes.
 
-The stable version of KPP-Mistra can be downloaded [here](https://github.com/MistraModel/KPP-Mistra/releases).
+The stable version of __KPP-Mistra__ can be downloaded
+[here](https://github.com/MistraModel/KPP-Mistra/releases).
 
 ******************************************************************************
 
@@ -97,8 +96,5 @@ __To clean the KPP installation:__
 
 ******************************************************************************
 
-
-If you have any problems please send the detailed error report and the machine
-environment to: sandu@cs.vt.edu
-
-To acknowledge and cite KPP, see instructions on: https://people.cs.vt.edu/~asandu/Software/Kpp/.
+To acknowledge and cite KPP, please see instructions and references
+at: https://people.cs.vt.edu/~asandu/Software/Kpp/.
