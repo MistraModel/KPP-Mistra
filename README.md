@@ -1,11 +1,12 @@
 __KPP__ - The Kinetic PreProcessor
 
-Builds simulation code for chemical kinetic systems (for version, see
-`src/gdata.h`).
+Builds simulation code for chemical kinetic systems (for version
+number, see the `KPP_VERSION` variable in [src/gdata.h](src/gdata.h)).
 
 Copyright (C) 1995-1997 Valeriu Damian and Adrian Sandu, CGRER, Univ. Iowa (USA).
 
-Copyright (C) 1997-2016 Adrian Sandu, Michigan Tech. & Virginia Tech. (USA), with contributions from Rolf Sander, Max-Planck Institute for Chemistry, Mainz (Germany).
+Copyright (C) 1997-2016 Adrian Sandu, Michigan Tech. & Virginia Tech. (USA),
+with contributions from Rolf Sander, Max-Planck Institute for Chemistry, Mainz (Germany).
 
 KPP is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free
@@ -39,7 +40,7 @@ __KPP-Mistra__ is a custom version of KPP for the Mistra model
 from KPP v2.2.3 and includes all the bugfixes and modifications by
 R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus some
 additional modifications specific to Mistra by J. Bock. See the
-[changelog](CHANGELOG.md) file for a summary of the changes.
+[changelog](./CHANGELOG.md) file for a summary of the changes.
 
 The stable version of __KPP-Mistra__ can be downloaded
 [here](https://github.com/MistraModel/KPP-Mistra/releases).
@@ -62,18 +63,18 @@ __To install KPP:__
 4. Define the `KPP_HOME` environment variable to point to the complete
    path location of KPP. If, for example, KPP is installed in `$HOME/kpp`:
 
-  - with C shell (or tcsh) edit the file .cshrc (or .tcshrc) in your home directory and add:
+  - with __C shell__ (or __tcsh__) edit the file `.cshrc` (or `.tcshrc`) in your home directory and add:
 
     ```shell
     setenv KPP_HOME $HOME/kpp
-    set path=( $path $HOME/kpp/bin )
+    set path=( $path $KPP_HOME/bin )
     ```
 
-  - with bash shell edit the file .bashrc in your home directory and add:
+  - with __bash__ shell edit the file `.bashrc` in your home directory and add:
 
     ```shell
     export KPP_HOME=$HOME/kpp
-    export PATH=${PATH}:$HOME/kpp/bin
+    export PATH=${PATH}:$KPP_HOME/bin
     ```
 
    - Execute `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make sure these
