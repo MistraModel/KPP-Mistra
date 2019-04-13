@@ -1,5 +1,6 @@
 # KPP-Mistra
 
+******************************************************************************
 
 ## KPP
 
@@ -41,6 +42,7 @@ Kinetic PreProcessor KPP -- A Software Environment for Solving
 Chemical Kinetics", Computers and Chemical Engineering, 26, 11,
 1567-1579, 2002 [[link](https://doi.org/10.1016/S0098-1354(02)00128-X)].
 
+******************************************************************************
 
 ## KPP-Mistra
 
@@ -56,7 +58,7 @@ found in the [changelog](./CHANGELOG.md) file.
 The stable version of __KPP-Mistra__, to be used with the Mistra model, can be
 downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/releases).
 
-******************************************************************************
+### Instructions
 
 __To get started with KPP-Mistra:__  Read the [user's manual](./doc/kpp_UserManual.pdf).
 
@@ -95,8 +97,6 @@ __To install KPP-Mistra:__
 
 6. In the `KPP_HOME` directory build the source files using:  
    `make`
-
-******************************************************************************
 
 __To clean the KPP-Mistra installation:__
 
