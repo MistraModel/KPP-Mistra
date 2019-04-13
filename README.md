@@ -61,6 +61,11 @@ downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/re
 
 ### Instructions
 
+<<<<<<< HEAD
+=======
+__To get started with KPP-Mistra:__  read the [user's manual](./doc/kpp_UserManual.pdf).
+
+>>>>>>> 2e49834 (Add KPP branch info)
 __To install KPP-Mistra:__
 
 1. Make sure that FLEX (open-source lexical analizer) is installed using the command:  
