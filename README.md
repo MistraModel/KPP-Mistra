@@ -49,18 +49,19 @@ Chemical Kinetics", Computers and Chemical Engineering, 26, 11,
 __KPP-Mistra__ is a custom version of KPP for the
 [Mistra model](https://github.com/MistraModel/Mistra).
 
-KPP-Mistra was developed from KPP v2.2.3 and includes all the bugfixes
-and modifications made by R. Sander and J. Bock (see
-https://bitbucket.org/gcst/kpp), plus additional modifications
-specific to Mistra made by J. Bock. A summary of the changes can be
-found in the [changelog](./CHANGELOG.md) file.
+KPP-Mistra was developed from KPP v2.2.3 and includes all the
+bugfixes and modifications made by R. Sander and J. Bock (see the
+`f77` and `mistra` branches at: https://bitbucket.org/gcst/kpp),
+plus additional modifications specific to Mistra made by
+J. Bock. A summary of the changes can be found in the
+[changelog](./CHANGELOG.md) file.
 
 The stable version of __KPP-Mistra__, to be used with the Mistra model, can be
 downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/releases).
 
 ### Instructions
 
-__To get started with KPP-Mistra:__  Read the [user's manual](./doc/kpp_UserManual.pdf).
+__To get started with KPP-Mistra:__  read the [user's manual](./doc/kpp_UserManual.pdf).
 
 __To install KPP-Mistra:__
 
