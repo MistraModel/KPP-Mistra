@@ -1,7 +1,12 @@
-__KPP__ - The Kinetic PreProcessor
+# KPP-Mistra
 
-Builds simulation code for chemical kinetic systems (for version
-number, see the `KPP_VERSION` variable in [src/gdata.h](./src/gdata.h)).
+
+## KPP
+
+__KPP__ is a symbolic chemistry Kinetics PreProcessor, developed by
+V. Damian and A. Sandu, with the contribution of R. Sander. KPP builds
+simulation code for chemical kinetic systems. For more information, go
+to the [KPP website](https://people.cs.vt.edu/~asandu/Software/Kpp/).
 
 Copyright (C) 1995-1997 Valeriu Damian and Adrian Sandu, CGRER, Univ. Iowa (USA).
 
@@ -29,20 +34,27 @@ Virginia Polytechnic Institute and State University
 Blacksburg, VA 24060, USA  
 E-mail: sandu@cs.vt.edu
 
-******************************************************************************
+### Reference
 
-__KPP__ is a symbolic chemistry Kinetics PreProcessor, developed by V. Damian and A. Sandu,
-with the contribution of R. Sander. The KPP website is: https://people.cs.vt.edu/~asandu/Software/Kpp/.
+V. Damian, A. Sandu, M. Damian, F. Potra, G.R. Carmichael: "The
+Kinetic PreProcessor KPP -- A Software Environment for Solving
+Chemical Kinetics", Computers and Chemical Engineering, 26, 11,
+1567-1579, 2002 [[link](https://doi.org/10.1016/S0098-1354(02)00128-X)].
 
-__KPP-Mistra__ is a custom version of KPP for the [Mistra model](https://github.com/MistraModel/Mistra).
-It was developed from KPP v2.2.3 and includes all the bugfixes and modifications made by
-R. Sander and J. Bock (https://bitbucket.org/gcst/kpp), plus additional modifications
-specific to Mistra made by J. Bock.
 
-See the [changelog](./CHANGELOG.md) file for a summary of the changes.
+## KPP-Mistra
 
-The stable version of __KPP-Mistra__ to be used with the Mistra model
-can be downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/releases).
+__KPP-Mistra__ is a custom version of KPP for the
+[Mistra model](https://github.com/MistraModel/Mistra).
+
+KPP-Mistra was developed from KPP v2.2.3 and includes all the bugfixes
+and modifications made by R. Sander and J. Bock (see
+https://bitbucket.org/gcst/kpp), plus additional modifications
+specific to Mistra made by J. Bock. A summary of the changes can be
+found in the [changelog](./CHANGELOG.md) file.
+
+The stable version of __KPP-Mistra__, to be used with the Mistra model, can be
+downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/releases).
 
 ******************************************************************************
 
@@ -86,15 +98,10 @@ __To install KPP-Mistra:__
 
 ******************************************************************************
 
-__To clean the KPP installation:__
+__To clean the KPP-Mistra installation:__
 
-1. Delete the KPP object files with:  
+1. Delete the object files with:  
    `make clean`
 
-2. Delete the whole distribution (including the KPP binaries) with:  
+2. Delete the whole distribution (including the binaries) with:  
    `make distclean`
-
-******************************************************************************
-
-To acknowledge and cite KPP, please see instructions and references on the
-[KPP website](https://people.cs.vt.edu/~asandu/Software/Kpp/).
