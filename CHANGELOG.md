@@ -1,5 +1,5 @@
-Changes to KPP-2.2.3 required to use with Mistra
-------------------------------------------------
+Changes to KPP-2.2.3, for use with the Mistra model
+---------------------------------------------------
 
 Author: Josue Bock (josue.bock@meteo.fr)
 
@@ -23,24 +23,24 @@ Author: Josue Bock (josue.bock@meteo.fr)
 
 3. In `int/` directory:
 
-1. use corrected version of `int/rosenbrock.f`:
-   - `ode_Fun` is not the correct name, replaced by `FunTemplate`.
-   - `ode_Jac` is not the correct name, replaced by `JacTemplate`.
-
+   1. use corrected version of `int/rosenbrock.f`:
+      - `ode_Fun` is not the correct name, replaced by `FunTemplate`.
+      - `ode_Jac` is not the correct name, replaced by `JacTemplate`.
 
 4. In `util/` directory:
 
-1. use empty version of `UserRateLaws.f`.
+   1. use empty version of `UserRateLaws.f`.
 
-Further changes to KPP-2.2.3 - after Forcheck-ing the code
-----------------------------------------------------------
+Further changes to KPP-2.2.3, after Forcheck-ing the code
+---------------------------------------------------------
 
 Further changes in `int/rosenbrock.f`:
+
 - remove all calls to subroutine `WCOPY`.
 - remove all calls to subroutine `WSCAL`.
 
-Update: 05/03/2017
-------------------
+Update: 5 March 2017
+--------------------
 
 - bugfix in `src/code_f77.c`: in `F77_DeclareData`, a bug arise if the number of species (or reactions) is a multiple of `max_lines` corrected by adding `if( min < max )`.
 - in the same routine: dynamic column filling, to take 3-5 digits into account, and avoid too long files (and too numerous continuation lines).
@@ -50,8 +50,8 @@ Update: 05/03/2017
   - only `nvar` values were tested, not covering the whole `JVS(:)` values.
   - a strict equality (`== 0`) was used, while `abs < tiny` is safer.
 
-UPDATED: April 2019
--------------------
+UPDATE: April 2019
+------------------
 
 The changes listed above have been applied and documented with pull requests #1-#5 and #9
 in the __KPP-Mistra__ repository (https://github.com/MistraModel/KPP-Mistra).
@@ -62,3 +62,4 @@ Additional changes by P. Bräuer & R. Sommariva:
 - Update and format files `README.md` and `CHANGELOG.md`.
 - Delete file `diff_version_rolf_sander.txt`.
 - Delete directory `int.modified_WCOPY/` (backup/old version of `int/`?).
+- Change file permissions (remove execute).

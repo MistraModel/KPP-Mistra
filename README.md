@@ -61,48 +61,48 @@ downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/re
 
 ### Instructions
 
-__To get started with KPP-Mistra:__  read the [user's manual](./doc/kpp_UserManual.pdf).
-
 __To install KPP-Mistra:__
 
-1. Make sure that FLEX (open-source lexical analizer) is installed on your machine.
-   Type `flex --version` to test this.
+1. Make sure that FLEX (open-source lexical analizer) is installed using the command:  
+   `flex --version`
 
 2. Note down the exact path name where the FLEX library is installed.
-   The library is called: `libfl.a` or `libfl.sh`.
+   The library is called `libfl.a` or `libfl.so`.
 
-3. Make sure that BISON (open-source parser generator) is installed on your machine.
-   Type `bison --version` to test this.
+3. Make sure that BISON (open-source parser generator) is installed using the command:  
+   `bison --version`
 
-4. Define the `KPP_HOME` environment variable to point to the complete
-   path location of KPP-Mistra. If, for example, KPP-Mistra is installed in `$HOME/KPP-Mistra`:
+4. Define the `$KPP_HOME` environment variable to point to the path location of KPP-Mistra.
+   If, for example, KPP-Mistra is installed in `$HOME/KPP-Mistra`:
 
-  - with __C shell__ (or __tcsh__) edit the file `.cshrc` (or `.tcshrc`) in your home directory and add:
+  - with __C shell__ (or __tcsh shell__), edit the file `.cshrc` (or `.tcshrc`) in your home
+    directory and add:
     ```shell
     setenv KPP_HOME $HOME/KPP-Mistra
     set path=( $path $KPP_HOME/bin )
     ```
 
-  - with __bash__ shell edit the file `.bashrc` in your home directory and add:
+  - with __bash__ shell, edit the file `.bashrc` in your home directory and add:
     ```shell
     export KPP_HOME=$HOME/KPP-Mistra
     export PATH=${PATH}:$KPP_HOME/bin
     ```
 
-   - Execute `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make sure these
-     changes are in effect.
+   - Execute the command `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make sure these
+     changes are in effect. Alternatively, close and reopen the terminal.
 
-5. In the `KPP_HOME` directory edit: `Makefile.defs` and follow the
-   instructions included to specify the compiler, the location of the
-   FLEX library, etc...
+5. In the `$KPP_HOME` directory edit the file `Makefile.defs` and follow the instructions
+   to specify the compiler, the location of the FLEX library, etc...
 
-6. In the `KPP_HOME` directory build the source files using:  
+6. In the `KPP_HOME` directory build the source files using the command:  
    `make`
 
 __To clean the KPP-Mistra installation:__
 
-1. Delete the object files with:  
+1. Delete the KPP object files with the command:  
    `make clean`
 
-2. Delete the whole distribution (including the binaries) with:  
+2. Delete the whole distribution (including the binaries) with the command:  
    `make distclean`
+
+__To get started with KPP-Mistra:__  read the [KPP User's Manual](./doc/kpp_UserManual.pdf).
