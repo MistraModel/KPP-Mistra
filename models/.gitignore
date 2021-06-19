@@ -1,0 +1,15 @@
+# Fortran compilation files
+*.f90
+*.f
+
+# C compilation files
+*.h
+*.c
+
+# ----------------------------------------------- #
+
+# KPP compilation, executable, output files
+Makefile_*
+*.map
+*.exe
+*.dat
