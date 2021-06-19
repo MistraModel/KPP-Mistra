@@ -50,8 +50,8 @@ Update: 5 March 2017
   - only `nvar` values were tested, not covering the whole `JVS(:)` values.
   - a strict equality (`== 0`) was used, while `abs < tiny` is safer.
 
-UPDATE: April 2019
-------------------
+UPDATE
+------
 
 The changes listed above have been applied and documented with pull requests #1-#5 and #9
 in the __KPP-Mistra__ repository (https://github.com/MistraModel/KPP-Mistra).
