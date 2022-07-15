@@ -162,7 +162,7 @@ c <rvg
 !    RPAR(3)  -> Hstart, starting value for the integration step size
 !                
 !    RPAR(4)  -> FacMin, lower bound on step decrease factor (default=0.2)
-!    RPAR(5)  -> FacMin,upper bound on step increase factor (default=6)
+!    RPAR(5)  -> FacMax, upper bound on step increase factor (default=6)
 !    RPAR(6)  -> FacRej, step decrease factor after multiple rejections
 !                        (default=0.1)
 !    RPAR(7)  -> FacSafe, by which the new step is slightly smaller 
@@ -223,8 +223,9 @@ c <rvg
       PARAMETER (DeltaMin = 1.0d-5)
 !~~~>   Functions
       EXTERNAL FunTemplate, JacTemplate
-      !KPP_REAL WLAMCH ! jjb: WLAMCH now replaced by Fortran intrinsic function epsilon
+      !KPP_REAL WLAMCH ! jjb: WLAMCH now replaced by Fortran intrinsic function epsilon (see below)
       !EXTERNAL WLAMCH
+
 !~~~>  Initialize statistics
       Nfun = IPAR(11)
       Njac = IPAR(12)
@@ -470,8 +471,8 @@ c <rvg
       PARAMETER (ONE  = 1.0d0)
       PARAMETER (DeltaMin = 1.0d-5)
 !~~~>  Locally called functions
-      KPP_REAL ros_ErrorNorm
-      EXTERNAL ros_ErrorNorm
+      KPP_REAL ros_ErrorNorm !, WLAMCH
+      EXTERNAL ros_ErrorNorm !, WLAMCH
 !~~~>  Statistics on the work performed
       INTEGER Nfun,Njac,Nstp,Nacc,Nrej,Ndec,Nsol,Nsng
       COMMON /Statistics/ Nfun,Njac,Nstp,Nacc,Nrej,
@@ -669,8 +670,7 @@ c <rvg
       
       Err = ZERO
       DO i=1,KPP_NVAR
-!        Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
-        Ymax = ABS(Y(i))
+         Ymax = MAX(ABS(Y(i)),ABS(Ynew(i)))
         IF (VectorTol) THEN
           Scale = AbsTol(i)+RelTol(i)*Ymax
         ELSE
@@ -865,7 +865,7 @@ c <rvg
 !~~~> M_i = Coefficients for new step solution
        ros_M(1)= (3.d0)/(2.d0*g)
        ros_M(2)= (1.d0)/(2.d0*g)
-! E_i = Coefficients for error estimator       
+!~~~> E_i = Coefficients for error estimator
        ros_E(1) = 1.d0/(2.d0*g)
        ros_E(2) = 1.d0/(2.d0*g)
 !~~~> ros_ELO = estimator of local order - the minimum between the
@@ -925,7 +925,7 @@ c <rvg
       ros_M(1) =  0.1d+01
       ros_M(2) =  0.61697947043828245592553615689730d+01
       ros_M(3) = -0.42772256543218573326238373806514d+00
-! E_i = Coefficients for error estimator       
+!~~~> E_i = Coefficients for error estimator
       ros_E(1) =  0.5d+00
       ros_E(2) = -0.29079558716805469821718236208017d+01
       ros_E(3) =  0.22354069897811569627360909276199d+00

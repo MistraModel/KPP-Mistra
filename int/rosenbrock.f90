@@ -5,6 +5,7 @@
 !               * Ros4                                                    !
 !               * Rodas3                                                  !
 !               * Rodas4                                                  !
+!               * Rang3                                                   !
 !  By default the code employs the KPP sparse linear algebra routines     !
 !  Compile with -DFULL_ALGEBRA to use full linear algebra (LAPACK)        !
 !                                                                         !
@@ -155,6 +156,7 @@ SUBROUTINE Rosenbrock(N,Y,Tstart,Tend, &
 !        = 3 :    Ros4
 !        = 4 :    Rodas3
 !        = 5 :    Rodas4
+!        = 6 :    Rang3
 !
 !    ICNTRL(4)  -> maximum number of integration steps
 !        For ICNTRL(4)=0) the default value of 100000 is used
@@ -855,7 +857,7 @@ Stage: DO istage = 1, ros_S
 !~~~> M_i = Coefficients for new step solution
     ros_M(1)= (3.0_dp)/(2.0_dp*g)
     ros_M(2)= (1.0_dp)/(2.0_dp*g)
-! E_i = Coefficients for error estimator
+!~~~> E_i = Coefficients for error estimator
     ros_E(1) = 1.0_dp/(2.0_dp*g)
     ros_E(2) = 1.0_dp/(2.0_dp*g)
 !~~~> ros_ELO = estimator of local order - the minimum between the
@@ -907,7 +909,7 @@ Stage: DO istage = 1, ros_S
    ros_M(1) =  0.1E+01_dp
    ros_M(2) =  0.61697947043828245592553615689730E+01_dp
    ros_M(3) = -0.42772256543218573326238373806514_dp
-! E_i = Coefficients for error estimator
+!~~~> E_i = Coefficients for error estimator
    ros_E(1) =  0.5_dp
    ros_E(2) = -0.29079558716805469821718236208017E+01_dp
    ros_E(3) =  0.22354069897811569627360909276199_dp
