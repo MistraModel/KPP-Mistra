@@ -10,6 +10,7 @@
 
 # KPP compilation, executable, output files
 Makefile_*
+*.kpp
 *.map
 *.exe
 *.dat
