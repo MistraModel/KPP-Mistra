@@ -67,6 +67,7 @@ extern int nError;
 extern int nWarning;
 extern int crt_section;
 
+int EqNoCase( char *s1, char *s2 );
 int Parser( char * filename );
 void ScanError( char *fmt, ...  );
 void ParserError( char *fmt, ...  );
@@ -91,6 +92,20 @@ void CheckLump( char *spname );
 void AddLookAt( char *spname );
 void AddMonitor( char *spname );
 void AddTransport( char *spname );
+
+/* jjb below a set of declarations that were implicit for scan.y */
+void AddUseFile( char *fname );
+void CheckAll();
+void CmdStoicmat( char *cmd );
+void DefineInitializeNbr( char *cmd );
+void DefineXGrid( char *cmd );
+void DefineYGrid( char *cmd );
+void DefineZGrid( char *cmd );
+void LookAtAll();
+void SparseData( char *cmd );
+void TransportAll();
+/* jjb modified from int to void, now need to be declared explicitely */
+void EqnString( int eq, char * buf );
 
 void WriteAtoms();
 void WriteSpecies();

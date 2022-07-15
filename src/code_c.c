@@ -32,6 +32,7 @@
 
 #include "gdata.h"
 #include "code.h"
+#include "scan.h" /* void Message( ... ) */
 #include <string.h>
 
 #define MAX_LINE  120
@@ -118,7 +119,6 @@ int jfound;
 /*  Operator Mapping: 0xaa = '*' | 0xab = '+' | 0xac = ','
                       0xad = '-' | 0xae ='.' | 0xaf = '/' */
 /* char op_mult=0xaa, op_plus=0xab, op_minus=0xad, op_dot=0xae, op_div=0xaf; */
-/* char op_mult='*', op_plus='+', op_minus='-', op_dot='.', op_div='/'; */
 char op_plus='+', op_minus='-';
 
   crtident = 2 + ident * 2;
@@ -368,7 +368,7 @@ char dummy_val[100];           /* used just to avoid strange behaviour of
     case CONST: bprintf("#define %-20s %-10s ", var->name, val );
                 break;
     default:
-                printf( "Invalid constant", var->type );
+                printf( "Invalid constant %d", var->type );
                 break;
   }
   if( varTable[ v ]->comment )

@@ -192,7 +192,7 @@ char *p;
   p = outBuf;
   while( *p )
     *p++ &= ~0x80;
-  fprintf( currentFile, outBuf );
+  fprintf( currentFile, "%s", outBuf );
   outBuffer = outBuf;
   *outBuffer = 0;
 }
@@ -204,7 +204,7 @@ char *p;
   p = buf;
   while( *p )
     *p++ &= ~0x80;
-  fprintf( currentFile, buf );
+  fprintf( currentFile, "%s", buf );
 }
 
 void WriteDelim()

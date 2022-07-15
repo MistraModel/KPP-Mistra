@@ -40,6 +40,7 @@
   #include <malloc.h>
   #include <string.h>
   #include <unistd.h>
+  #include "gdata.h"
   #include "scan.h"
 
   #define __YYSCLASS
