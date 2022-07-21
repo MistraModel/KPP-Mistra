@@ -21,13 +21,13 @@ version 2 of the License, or (at your option) any later version.
 
 KPP is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
 for more details.
 
-A copy of the GNU General Public License could be found below; you
-could also consult http://www.gnu.org/copyleft/gpl.html or write to the
-Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
-02111-1307, USA.
+A copy of the GNU General Public License can be found in the `LICENCE`
+file; you can also consult http://www.gnu.org/copyleft/gpl.html or
+write to the Free Software Foundation, Inc., 59 Temple Place - Suite
+330, Boston, MA 02111-1307, USA.
 
 Adrian Sandu  
 Computer Science Department  
@@ -49,15 +49,14 @@ Chemical Kinetics", Computers and Chemical Engineering, 26, 11,
 __KPP-Mistra__ is a custom version of KPP for the
 [Mistra model](https://github.com/MistraModel/Mistra).
 
-KPP-Mistra was developed from KPP v2.2.3 and includes all the
-bugfixes and modifications made by R. Sander and J. Bock (see the
-`f77` and `mistra` branches at: https://bitbucket.org/gcst/kpp),
-plus additional modifications specific to Mistra made by
-J. Bock. A summary of the changes can be found in the
-[changelog](./CHANGELOG.md) file.
+KPP-Mistra was developed from KPP v2.2.3 and includes all the bugfixes
+and modifications made by R. Sander and J. Bock (see the `f77` and
+`mistra` branches at: https://bitbucket.org/gcst/kpp), plus additional
+modifications specific to Mistra made by J. Bock. A summary of the
+changes can be found in the `CHANGELOG.md` file.
 
-The stable version of __KPP-Mistra__, to be used with the Mistra model, can be
-downloaded from the [releases page](https://github.com/MistraModel/KPP-Mistra/releases).
+The stable version of __KPP-Mistra__ can be downloaded from the
+[Releases](https://github.com/MistraModel/KPP-Mistra/releases) page.
 
 ### Instructions
 
@@ -105,4 +104,4 @@ __To clean the KPP-Mistra installation:__
 2. Delete the whole distribution (including the binaries) with the command:  
    `make distclean`
 
-__To get started with KPP-Mistra:__  read the [KPP User's Manual](./doc/kpp_UserManual.pdf).
+__To get started:__ the **KPP User's Manual** can be found in the `doc/` directory.

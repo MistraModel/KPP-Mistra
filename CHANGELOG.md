@@ -1,15 +1,13 @@
 Changes to KPP-2.2.3, for use with the Mistra model
----------------------------------------------------
+===================================================
 
-Author: Josue Bock (josue.bock@meteo.fr)
+Author: J. Bock (josue.bock@meteo.fr)
 
 1. In main directory:
-
    1. create `bin/` directory.
    2. edit `Makefile.defs` according to KPP instructions.
 
 2. In `src/` directory:
-
    1. edit `code_f77.c` and decrease the number of written columns (integer case) from 12 to 11 (or less):
       - `maxCols = 11`.
       - `if (((i+1) % 11 == 0 ...`.
@@ -22,44 +20,49 @@ Author: Josue Bock (josue.bock@meteo.fr)
    6. correct `gen.c` subroutine `GenerateJacReactantProd : allocate integer arrays instead of a declaration`.
 
 3. In `int/` directory:
-
    1. use corrected version of `int/rosenbrock.f`:
       - `ode_Fun` is not the correct name, replaced by `FunTemplate`.
       - `ode_Jac` is not the correct name, replaced by `JacTemplate`.
 
 4. In `util/` directory:
-
    1. use empty version of `UserRateLaws.f`.
 
-Further changes to KPP-2.2.3, after Forcheck-ing the code
----------------------------------------------------------
+Further changes to KPP-2.2.3, after `Forcheck`-ing the code
+-----------------------------------------------------------
 
-Further changes in `int/rosenbrock.f`:
-
+In `int/rosenbrock.f` file:
 - remove all calls to subroutine `WCOPY`.
 - remove all calls to subroutine `WSCAL`.
 
+
 Update: 5 March 2017
---------------------
+====================
 
 - bugfix in `src/code_f77.c`: in `F77_DeclareData`, a bug arise if the number of species (or reactions) is a multiple of `max_lines` corrected by adding `if( min < max )`.
 - in the same routine: dynamic column filling, to take 3-5 digits into account, and avoid too long files (and too numerous continuation lines).
 - plus cleaning of the whole file, according to compilation messages.
 - in `src/gen.c`, little improvement to print correct file extension when running KPP, plus cleaning of this file according to compilation messages.
 - in `util/sutil.f`: bugfix in subroutine `KppDecomp`: there was already a test to prevent `JVS(...) == 0`, but there were 2 mistakes:
-  - only `nvar` values were tested, not covering the whole `JVS(:)` values.
-  - a strict equality (`== 0`) was used, while `abs < tiny` is safer.
+  1. only `nvar` values were tested, not covering the whole `JVS(:)` values.
+  2. a strict equality (`== 0`) was used, while `abs < tiny` is safer.
 
-UPDATE
-------
 
-The changes listed above have been applied and documented with pull requests #1-#5 and #9
+Update: April 2019
+==================
+
+All changes listed above have been applied to KPP v2.2.3 and documented with Pull Requests #1-#5 and #9
 in the __KPP-Mistra__ repository (https://github.com/MistraModel/KPP-Mistra).
 
 Additional changes by P. Bräuer & R. Sommariva:
-
 - Move license file to main directory and delete `gpl/` directory.
 - Update and format files `README.md` and `CHANGELOG.md`.
 - Delete file `diff_version_rolf_sander.txt`.
 - Delete directory `int.modified_WCOPY/` (backup/old version of `int/`?).
-- Change file permissions (remove execute), add `.gitignore` files.
+- Change file permissions (remove execute).
+
+
+Update: May 2022
+==================
+
+- Rename license file to `LICENSE`.
+- Update `README.md` and `CHANGELOG.md` files.
