@@ -41,7 +41,7 @@ char *F77_types[] = { "",                 /* VOID */
                     "INTEGER",          /* INT */
                     "REAL",             /* FLOAT */
                     "REAL*8",           /* DOUBLE */
-                    "CHARACTER*12",     /* STRING */
+                    "CHARACTER*32",     /* STRING */
                     "CHARACTER*100"     /* DOUBLESTRING */
                   };
 
@@ -113,7 +113,7 @@ int i,j;
 char c;
 int first;
 int crtident;
-int number_of_lines = 1, MAX_NO_OF_LINES = 36;
+int number_of_lines = 1, MAX_NO_OF_LINES = 250;
 int jfound;
 char op_plus='+', op_minus='-';
 
