@@ -352,7 +352,7 @@ void GenerateGData()
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 void GenerateMonitorData()
 {
-int  i, j;
+int  i;
 int  *crow;
 int  *diag;
 int  *lookat;
@@ -2147,7 +2147,7 @@ void GenerateParamHeader()
 {
 int spc;
 int i;
-char name[20];
+char name[25]; /* jjb: should be MAX_SPNAME + 5 (5 is the length of "indf_")*/
 
 int j,dummy_species;
 
@@ -2396,7 +2396,7 @@ char s[40];
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-int EqnString( int eq, char * buf )
+void EqnString( int eq, char * buf )
 {
 static int lhs = 0;
 static int rhs = 0;
@@ -2419,7 +2419,7 @@ char lhsbuf[MAX_EQNLEN], rhsbuf[MAX_EQNLEN];
   EqnStr( eq, rhsbuf, Stoich_Right);
 
   sprintf(buf, "%*s --> %-*s", lhs, lhsbuf, rhs, rhsbuf);
-  return strlen(buf);
+  /*return strlen(buf);*/
 }
 
 
@@ -3084,7 +3084,7 @@ case 't':
   break;
 
 default:
-  printf("\n Unrecognized option '%s' in GenerateF90Modules\n", where);
+  printf("\n Unrecognized option '%c' in GenerateF90Modules\n", where);
   break;
 }
 }
@@ -3095,7 +3095,7 @@ void Generate()
 {
 int i;
 int n;
-char suffix[3];
+char suffix[5];
 
   VarStartNr = 0;
   FixStartNr = VarNr;
