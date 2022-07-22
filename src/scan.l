@@ -337,7 +337,6 @@ UFLOAT  {UREAL}([eE]{NRS})?
                          { "RUN",        PRM_STATE, RUN },
                          { "USES",       USE_STATE, USES },
                          { "SPARSEDATA", PRM_STATE, SPARSEDATA },
-                         { "FLUX",       PRM_STATE, FLUX }, 
                          { 0, 0, 0 } 
                        };
 

@@ -16,25 +16,6 @@
       INTEGER  IPAR(20)
       EXTERNAL  FunTemplate, JacTemplate
 
-! jjb>
-!
-! the following lines are "hardcoded" in KPP_HOME/int/rosenbrock.f
-!
-! settings & values are from rvg
-c rvg>
-c copied from ros3.def 
-!      STEPMIN = 1.d-30
-!      STEPMAX = MIN(10.d0,(TOUT - TIN))
-!      ISNOTAUTONOM=1 ! jjb non longer needed with KPP-2.x, this is the default case (IPAR(1) = 0, see below)
-c      STEPSTART=STEPMIN
-!      STEPSTART=1.d-3
-      do i=1,NVAR
-         RTOL(i) = 1.d-2
-         ATOL(i) = 1.d-18
-      enddo
-c <rvg
-! <jjb
-
 
       DO i=1,20
         IPAR(i) = 0
@@ -44,11 +25,8 @@ c <rvg
      
       IPAR(1) = 0       ! non-autonomous
       IPAR(2) = 1       ! vector tolerances
+      RPAR(3) = STEPMIN ! starting step
       IPAR(4) = 5       ! choice of the method
-!      IPAR(4) = 2       ! choice of the method ! jjb ros 3 choice for mistra
-      RPAR(1) = SPACING(MIN(TIN,TOUT)) ! Hmin is defined so that T + Hmin /= T
-!     RPAR(3) = STEPMIN ! starting step
-      RPAR(3) = 1.d-3   ! starting step       ! jjb change following RvG settings for mistra
 
       CALL Rosenbrock(VAR,TIN,TOUT,
      &            ATOL,RTOL,
@@ -60,8 +38,8 @@ c <rvg
       Nacc = Nacc + IPAR(14)
       Nrej = Nrej + IPAR(15)
       Nsng = Nsng + IPAR(18)
-!      PRINT*,'Step=',Nstp,' Acc=',Nacc,' Rej=',Nrej,
-!     &      ' Singular=',Nsng
+      PRINT*,'Step=',Nstp,' Acc=',Nacc,' Rej=',Nrej,
+     &      ' Singular=',Nsng
 
 
       IF (IERR.LT.0) THEN
@@ -508,14 +486,7 @@ c <rvg
         CALL ros_ErrorMsg(-6,T,H,IERR)
         RETURN
       END IF
-!      IF ( ((T+0.1d0*H).EQ.T).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
-      IF ( ((T+H).EQ.T) ) THEN  ! Step size too small
-! jjb: use intrinsic Fortran function "spacing",
-!      which should result in a more accurate test (differences will occur if
-!      0.1*H < spacing(T) <= H
-! jjb despite more accurate, this second version is probably slower
-!      (computing cost of spacing function)
-!      IF ( (H.LT.SPACING(T)).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
+      IF ( ((T+0.1d0*H).EQ.T).OR.(H.LE.Roundoff) ) THEN  ! Step size too small
         CALL ros_ErrorMsg(-7,T,H,IERR)
         RETURN
       END IF
@@ -625,10 +596,6 @@ c <rvg
       ELSE                 !~~~> Reject step
          IF (RejectMoreH) THEN
             Hnew=H*FacRej
-!           Hnew=MAX(Hmin,H*FacRej) ! FacRej is small (0.1) so need to check that Hnew is not too small
-!                                      jjb: this is probably not good. Let Hnew become too small is good,
-!                                           it will be diagnosed at the beginning of the loop as a "step
-!                                           size too small" case
          END IF
          RejectMoreH = RejectLastH
          RejectLastH = .TRUE.
@@ -692,7 +659,6 @@ c <rvg
 !~~~> The time partial derivative of the function by finite differences
 !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       IMPLICIT NONE
-!      INCLUDE 'KPP_ROOT_Parameters.h' ! jjb Forcheck
 
 !~~~> Input arguments   
       KPP_REAL T, Roundoff, Y(KPP_NVAR), Fcn0(KPP_NVAR) 
@@ -727,7 +693,6 @@ c <rvg
 !          -exit after 5 consecutive fails
 ! --- --- --- --- --- --- --- --- --- --- --- --- ---
       IMPLICIT NONE
-!      INCLUDE 'KPP_ROOT_Parameters.h' ! jjb Forcheck
       INCLUDE 'KPP_ROOT_Sparse.h'
       
 !~~~> Input arguments      

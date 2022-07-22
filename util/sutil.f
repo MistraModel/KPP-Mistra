@@ -18,25 +18,16 @@ C ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IER = 0
       DO k=1,NVAR
-        ! < jjb_20170301:
-        !    don't check if real value == 0
-        ! IF ( JVS( LU_DIAG(k) ) .EQ. 0. ) THEN
-        !    IER = k
-        !    RETURN
-        !END IF
+        IF ( JVS( LU_DIAG(k) ) .EQ. 0. ) THEN
+            IER = k
+            RETURN
+        END IF
         DO kk = LU_CROW(k), LU_CROW(k+1)-1
               W( LU_ICOL(kk) ) = JVS(kk)
         END DO
         DO kk = LU_CROW(k), LU_DIAG(k)-1
             j = LU_ICOL(kk)
-            ! ... jjb_20170301 continued ...
-            IF ( ABS(JVS( LU_DIAG(J) )) .GT. 0. ) THEN
                a = -W(j) / JVS( LU_DIAG(j) )
-            ELSE
-               IER = k
-               RETURN
-            END IF
-            ! jjb_20170301 >
             W(j) = -a
             DO jj = LU_DIAG(j)+1, LU_CROW(j+1)-1
                W( LU_ICOL(jj) ) = W( LU_ICOL(jj) ) + a*JVS(jj)
@@ -71,10 +62,7 @@ C ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
       IER = 0
       DO k=1,NVAR
-        ! jjb_20170301 following mz_rs_20050606:
-        !    don't check if real value == 0
-        ! IF ( JVS( LU_DIAG(k) ) .EQ. 0. ) THEN
-        IF ( ABS(JVS( LU_DIAG(k) )) .LT. TINY(0.) ) THEN
+        IF ( JVS( LU_DIAG(k) ) .EQ. 0. ) THEN
             IER = k
             RETURN
         END IF
