@@ -30,6 +30,7 @@
 ******************************************************************************/
 
 
+#include <ctype.h> /* isspace */
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>

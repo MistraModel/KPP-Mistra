@@ -43,6 +43,7 @@
 
 %{
   #include <string.h> /* strcpy, strlen */
+  #include <ctype.h>  /* toupper */
   #include "gdata.h" 
   #include "scan.h" 
   #include "y.tab.h"
@@ -336,7 +337,6 @@ UFLOAT  {UREAL}([eE]{NRS})?
                          { "RUN",        PRM_STATE, RUN },
                          { "USES",       USE_STATE, USES },
                          { "SPARSEDATA", PRM_STATE, SPARSEDATA },
-                         { "FLUX",       PRM_STATE, FLUX }, 
                          { 0, 0, 0 } 
                        };
 
