@@ -1,10 +1,18 @@
 # KPP-Mistra
 
+KPP-Mistra is a version of the KPP software customized for the
+[Mistra model](https://github.com/MistraModel/Mistra).
+
+KPP-Mistra should only be used in conjunction with the
+[Mistra model](https://github.com/MistraModel/Mistra); for any other
+application use the [original version](https://people.cs.vt.edu/~asandu/Software/Kpp/)
+or check out the GEOS-Chem [community version](https://github.com/KineticPreProcessor/KPP).
+
 ******************************************************************************
 
 ## KPP
 
-__KPP__ is a symbolic chemistry Kinetics PreProcessor, developed by
+KPP is a symbolic chemistry Kinetics PreProcessor, developed by
 V. Damian and A. Sandu, with the contribution of R. Sander. KPP builds
 simulation code for chemical kinetic systems. For more information, go
 to the [KPP website](https://people.cs.vt.edu/~asandu/Software/Kpp/).
@@ -46,62 +54,62 @@ Chemical Kinetics", Computers and Chemical Engineering, 26, 11,
 
 ## KPP-Mistra
 
-__KPP-Mistra__ is a custom version of KPP for the
-[Mistra model](https://github.com/MistraModel/Mistra).
-
-KPP-Mistra was developed from KPP v2.2.3 and includes all the bugfixes
+KPP-Mistra was developed from *KPP v2.2.3* and includes all the bugfixes
 and modifications made by R. Sander and J. Bock (see the `f77` and
 `mistra` branches at: https://bitbucket.org/gcst/kpp), plus additional
 modifications specific to Mistra made by J. Bock. A summary of the
 changes can be found in the `CHANGELOG.md` file.
 
-The stable version of __KPP-Mistra__ can be downloaded from the
-[Releases](https://github.com/MistraModel/KPP-Mistra/releases) page.
+The stable version of KPP-Mistra can be downloaded from the
+[Releases](https://github.com/MistraModel/KPP-Mistra/releases)
+page.
 
 ### Instructions
 
-__To install KPP-Mistra:__
+#### To install KPP-Mistra:
 
-1. Make sure that FLEX (open-source lexical analizer) is installed using the command:  
-   `flex --version`
+1. Check that FLEX (open-source lexical analizer) is installed using
+   the command: `flex --version`
 
-2. Note down the exact path name where the FLEX library is installed.
-   The library is called `libfl.a` or `libfl.so`.
+2. Note the path of the FLEX library (`libfl.a` or `libfl.so`).
 
-3. Make sure that BISON (open-source parser generator) is installed using the command:  
-   `bison --version`
+3. Check that BISON (open-source parser generator) is installed using
+   the command: `bison --version`
 
-4. Define the `$KPP_HOME` environment variable to point to the path location of KPP-Mistra.
+4. Define the `$KPP_HOME` environment variable to point to the location of KPP-Mistra.
    If, for example, KPP-Mistra is installed in `$HOME/KPP-Mistra`:
 
-  - with __C shell__ (or __tcsh shell__), edit the file `.cshrc` (or `.tcshrc`) in your home
-    directory and add:
+  - if using the **C** shell (or **tcsh** shell), add the following to
+    `$HOME/.cshrc` (or `$HOME/.tcshrc`):
     ```shell
     setenv KPP_HOME $HOME/KPP-Mistra
     set path=( $path $KPP_HOME/bin )
     ```
 
-  - with __bash__ shell, edit the file `.bashrc` in your home directory and add:
+  - if using the **bash** shell, add the following to `$HOME/.bashrc`:
     ```shell
     export KPP_HOME=$HOME/KPP-Mistra
     export PATH=${PATH}:$KPP_HOME/bin
     ```
 
-   - Execute the command `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make sure these
-     changes are in effect. Alternatively, close and reopen the terminal.
+   - Execute the command `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make
+     sure that these changes are in effect. Alternatively, close and reopen the terminal.
 
-5. In the `$KPP_HOME` directory edit the file `Makefile.defs` and follow the instructions
-   to specify the compiler, the location of the FLEX library, etc...
+5. In `$KPP_HOME` edit the file `Makefile.defs` and follow the instructions to
+   specify the compiler, the location of the FLEX library, etc...
 
-6. In the `KPP_HOME` directory build the source files using the command:  
-   `make`
+6. In the `KPP_HOME` directory build the source files using the command: `make`
 
-__To clean the KPP-Mistra installation:__
+#### To clean KPP-Mistra:
 
-1. Delete the KPP object files with the command:  
-   `make clean`
+1. Delete the KPP object files with the command: `make clean`
 
-2. Delete the whole distribution (including the binaries) with the command:  
-   `make distclean`
+2. Delete the KPP object files and binaries with the command: `make distclean`
 
-__To get started:__ the **KPP User's Manual** can be found in the `doc/` directory.
+#### To use KPP-Mistra:
+
+The *KPP User's Manual* can be found in the `doc/` directory.
+
+Please refer to the *Mistra manual* in the `doc/` directory of the
+[Mistra repository](https://github.com/MistraModel/Mistra) for
+further information.
