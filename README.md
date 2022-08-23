@@ -71,7 +71,8 @@ page.
 1. Check that FLEX (open-source lexical analizer) is installed using
    the command: `flex --version`
 
-2. Note the path of the FLEX library (`libfl.a` or `libfl.so`).
+2. Find the path of the FLEX library (`libfl.a` or `libfl.so`) using
+   the command: `locate -b libfl.*`
 
 3. Check that BISON (open-source parser generator) is installed using
    the command: `bison --version`
@@ -83,20 +84,21 @@ page.
     `$HOME/.cshrc` (or `$HOME/.tcshrc`):
     ```shell
     setenv KPP_HOME $HOME/KPP-Mistra
-    set path=( $path $KPP_HOME/bin )
+    set PATH=( $PATH $KPP_HOME/bin )
     ```
 
   - if using the **bash** shell, add the following to `$HOME/.bashrc`:
     ```shell
     export KPP_HOME=$HOME/KPP-Mistra
-    export PATH=${PATH}:$KPP_HOME/bin
+    export PATH=$PATH:$KPP_HOME/bin
     ```
 
    - Execute the command `source ~/.cshrc` (or `.tcshrc`, or `.bashrc`) to make
      sure that these changes are in effect. Alternatively, close and reopen the terminal.
 
-5. In `$KPP_HOME` edit the file `Makefile.defs` and follow the instructions to
-   specify the compiler, the location of the FLEX library, etc...
+5. In `$KPP_HOME` edit the file `Makefile.defs`. Follow the
+   instructions to specify the compiler (by default, the GNU compiler
+   `gcc`), the path of the FLEX library, etc...
 
 6. In the `KPP_HOME` directory build the source files using the command: `make`
 
